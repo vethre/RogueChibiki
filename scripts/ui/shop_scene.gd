@@ -30,9 +30,19 @@ const COLOR_SKY_BLUE = Color(0.5, 0.8, 1.0)
 const COLOR_MINT = Color(0.6, 1.0, 0.8)
 const COLOR_PEACH = Color(1.0, 0.8, 0.7)
 
-# Pack prices
-const UPG_PACK_COST: int = 60
-const CARD_PACK_COST: int = 50
+# Base pack prices (scale with stage)
+const UPG_PACK_BASE_COST: int = 60
+const CARD_PACK_BASE_COST: int = 50
+const UPGRADE_CARD_BASE_COST: int = 30
+
+func _get_upg_pack_cost() -> int:
+	return int(UPG_PACK_BASE_COST * (1.0 + (RunManager.current_stage - 1) * 0.1))
+
+func _get_card_pack_cost() -> int:
+	return int(CARD_PACK_BASE_COST * (1.0 + (RunManager.current_stage - 1) * 0.1))
+
+func _get_upgrade_card_cost() -> int:
+	return int(UPGRADE_CARD_BASE_COST * (1.0 + (RunManager.current_stage - 1) * 0.1))
 
 # Pack icons
 const UPG_PACK_ICON = preload("res://assets/UPGPackIcon.png")
@@ -110,18 +120,22 @@ func _style_buttons() -> void:
 	_apply_button_style(upg_pack_btn, COLOR_LAVENDER, Color(0.2, 0.15, 0.3))
 	_apply_button_style(card_pack_btn, COLOR_SKY_BLUE, Color(0.15, 0.2, 0.3))
 
-	# Apply pack icons
+	# Apply pack icons - fill entire button
 	upg_pack_btn.icon = UPG_PACK_ICON
 	upg_pack_btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	upg_pack_btn.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
 	upg_pack_btn.expand_icon = true
-	upg_pack_btn.add_theme_constant_override("icon_max_width", 32)
+	upg_pack_btn.add_theme_constant_override("icon_max_width", 120)
+	upg_pack_btn.text = ""  # Clear text, we'll add price label separately
 
 	card_pack_btn.icon = CARD_PACK_ICON
 	card_pack_btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	card_pack_btn.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
 	card_pack_btn.expand_icon = true
-	card_pack_btn.add_theme_constant_override("icon_max_width", 32)
+	card_pack_btn.add_theme_constant_override("icon_max_width", 120)
+	card_pack_btn.text = ""  # Clear text, we'll add price label separately
+
+	# Price labels will be updated in _update_ui with scaling costs
 
 	# Style upgrade button
 	_apply_button_style(upgrade_btn, COLOR_WARM_GOLD, Color(0.25, 0.2, 0.1))
@@ -191,6 +205,24 @@ func _style_hp_bar() -> void:
 	fill_style.corner_radius_bottom_left = 5
 	fill_style.corner_radius_bottom_right = 5
 	hp_bar.add_theme_stylebox_override("fill", fill_style)
+
+func _update_pack_price_label(btn: Button, cost: int) -> void:
+	# Find or create the price label
+	var price_label = btn.get_node_or_null("PriceLabel")
+	if not price_label:
+		price_label = Label.new()
+		price_label.name = "PriceLabel"
+		price_label.add_theme_font_size_override("font_size", 18)
+		price_label.add_theme_color_override("font_color", COLOR_WARM_GOLD)
+		price_label.add_theme_color_override("font_outline_color", Color(0, 0, 0, 1))
+		price_label.add_theme_constant_override("outline_size", 4)
+		price_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		price_label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+		price_label.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+		price_label.offset_top = -30
+		price_label.offset_bottom = -5
+		btn.add_child(price_label)
+	price_label.text = "%dG" % cost
 
 func _play_entrance_animation() -> void:
 	# Simple fade in (no scale - keeps layout clean)
@@ -268,12 +300,22 @@ func _update_ui() -> void:
 	# Update card buttons
 	_update_card_buttons()
 
-	# Update pack buttons (icons already show pack names)
-	upg_pack_btn.text = "%dG" % UPG_PACK_COST
-	upg_pack_btn.disabled = RunManager.run_gold < UPG_PACK_COST
+	# Update pack buttons with scaling costs
+	var upg_cost = _get_upg_pack_cost()
+	var card_cost = _get_card_pack_cost()
+	var upgrade_cost = _get_upgrade_card_cost()
 
-	card_pack_btn.text = "%dG" % CARD_PACK_COST
-	card_pack_btn.disabled = RunManager.run_gold < CARD_PACK_COST
+	upg_pack_btn.tooltip_text = "Upgrade Pack - %dG" % upg_cost
+	upg_pack_btn.disabled = RunManager.run_gold < upg_cost
+	_update_pack_price_label(upg_pack_btn, upg_cost)
+
+	card_pack_btn.tooltip_text = "Card Pack - %dG" % card_cost
+	card_pack_btn.disabled = RunManager.run_gold < card_cost
+	_update_pack_price_label(card_pack_btn, card_cost)
+
+	# Update upgrade button (costs gold, scales with stage)
+	upgrade_btn.text = "Upgrade\n%dG" % upgrade_cost
+	upgrade_btn.disabled = RunManager.run_gold < upgrade_cost or RunManager.get_upgradeable_cards().is_empty()
 
 func _update_card_buttons() -> void:
 	var buttons = [card_btn_1, card_btn_2, card_btn_3]
@@ -327,13 +369,15 @@ func _animate_heal() -> void:
 	tween.tween_property(hp_bar, "modulate", Color(1, 1, 1), 0.3)
 
 func _on_upgrade_pressed() -> void:
-	_show_upgrade_popup()
+	# Now shows card upgrades (free once per shop)
+	_show_free_card_upgrade_popup()
 
 func _on_upg_pack_pressed() -> void:
-	if RunManager.run_gold < UPG_PACK_COST:
+	var cost = _get_upg_pack_cost()
+	if RunManager.run_gold < cost:
 		return
 
-	if not RunManager.spend_gold(UPG_PACK_COST):
+	if not RunManager.spend_gold(cost):
 		return
 
 	AudioManager.play_purchase()
@@ -357,12 +401,16 @@ func _show_upg_pack_options() -> void:
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	main_vbox.add_child(grid)
 
-	# Generate 4 random options
-	var option_types = ["heal", "energy", "damage", "block", "draw", "gold", "upgrade_card", "remove_card"]
-	option_types.shuffle()
+	# Large pool of options - randomly pick 4 each time (roguelike variety)
+	var all_options = [
+		"heal", "energy", "damage", "block", "draw", "gold",
+		"upgrade_card", "remove_card",
+		"max_hp", "bonus_damage", "bonus_block", "weaken_enemy"
+	]
+	all_options.shuffle()
 
 	for i in range(4):
-		var option_type = option_types[i]
+		var option_type = all_options[i]
 		var option_item = _create_upg_pack_option(option_type, i)
 		grid.add_child(option_item)
 
@@ -463,6 +511,14 @@ func _get_option_data(option_type: String) -> Dictionary:
 			return {"name": "Upgrade", "desc": "Upgrade a card", "color": COLOR_MINT, "storable": false, "value": 0}
 		"remove_card":
 			return {"name": "Remove Card", "desc": "Remove a card", "color": COLOR_CORAL, "storable": false, "value": 0}
+		"max_hp":
+			return {"name": "Vitality Orb", "desc": "+8 Max HP", "color": COLOR_PEACH, "storable": false, "value": 8}
+		"bonus_damage":
+			return {"name": "Sharp Blade", "desc": "+2 Attack dmg", "color": COLOR_CORAL, "storable": false, "value": 2}
+		"bonus_block":
+			return {"name": "Iron Shield", "desc": "+2 Block", "color": COLOR_SKY_BLUE, "storable": false, "value": 2}
+		"weaken_enemy":
+			return {"name": "Curse Scroll", "desc": "Weaken next enemy", "color": COLOR_LAVENDER, "storable": true, "value": 2}
 	return {"name": "Unknown", "desc": "", "color": Color.WHITE, "storable": false, "value": 0}
 
 func _use_upg_pack_option(option_type: String, option_data: Dictionary) -> void:
@@ -498,6 +554,19 @@ func _use_upg_pack_option(option_type: String, option_data: Dictionary) -> void:
 			_close_popup()
 			_show_remove_card_popup_direct()
 			return
+		"max_hp":
+			RunManager.run_max_hp += option_data.value
+			RunManager.run_hp += option_data.value
+			_show_toast("+%d Max HP!" % option_data.value, COLOR_PEACH)
+		"bonus_damage":
+			RunManager.bonus_damage += option_data.value
+			_show_toast("+%d Attack Damage!" % option_data.value, COLOR_CORAL)
+		"bonus_block":
+			RunManager.bonus_block += option_data.value
+			_show_toast("+%d Block!" % option_data.value, COLOR_SKY_BLUE)
+		"weaken_enemy":
+			RunManager.next_enemy_weakened += option_data.value
+			_show_toast("Next enemy weakened!", COLOR_LAVENDER)
 	_close_popup()
 	_update_ui()
 
@@ -521,6 +590,8 @@ func _store_upg_pack_option(option_type: String, option_data: Dictionary) -> voi
 			consumable.effect_type = ConsumableData.ConsumableEffect.DRAW
 		"gold":
 			consumable.effect_type = ConsumableData.ConsumableEffect.GOLD
+		"weaken_enemy":
+			consumable.effect_type = ConsumableData.ConsumableEffect.WEAKEN
 
 	if RunManager.add_consumable(consumable):
 		AudioManager.play_purchase()
@@ -530,6 +601,21 @@ func _store_upg_pack_option(option_type: String, option_data: Dictionary) -> voi
 
 	_close_popup()
 	_update_ui()
+
+func _show_free_card_upgrade_popup() -> void:
+	"""Show card upgrade popup (costs gold, scales with stage)."""
+	var upgradeable = RunManager.get_upgradeable_cards()
+	if upgradeable.size() == 0:
+		_show_toast("No cards to upgrade!", COLOR_CORAL)
+		return
+
+	var cost = _get_upgrade_card_cost()
+	if not RunManager.spend_gold(cost):
+		_show_toast("Not enough gold!", COLOR_CORAL)
+		return
+
+	AudioManager.play_purchase()
+	_show_upgrade_card_popup_direct()
 
 func _show_upgrade_card_popup_direct() -> void:
 	"""Show upgrade card popup without charging gold (already paid via pack)."""
@@ -593,10 +679,11 @@ func _show_remove_card_popup_direct() -> void:
 	_add_close_button(main_vbox)
 
 func _on_card_pack_pressed() -> void:
-	if RunManager.run_gold < CARD_PACK_COST:
+	var cost = _get_card_pack_cost()
+	if RunManager.run_gold < cost:
 		return
 
-	_show_card_pack_popup()
+	_show_card_pack_popup(cost)
 
 func _on_continue() -> void:
 	AudioManager.play_card_pickup()
@@ -778,7 +865,7 @@ func _show_remove_card_popup_legacy() -> void:
 		_show_toast("Not enough cards!", COLOR_CORAL)
 		return
 
-	if not RunManager.spend_gold(UPG_PACK_COST):
+	if not RunManager.spend_gold(_get_upg_pack_cost()):
 		return
 
 	AudioManager.play_purchase()
@@ -820,7 +907,7 @@ func _show_upgrade_card_popup_legacy() -> void:
 		_show_toast("No cards to upgrade!", COLOR_CORAL)
 		return
 
-	if not RunManager.spend_gold(UPG_PACK_COST):
+	if not RunManager.spend_gold(_get_upg_pack_cost()):
 		return
 
 	AudioManager.play_purchase()
@@ -923,8 +1010,8 @@ func _on_take_relic(relic: RelicData) -> void:
 
 # ============ CARD PACK POPUP ============
 
-func _show_card_pack_popup() -> void:
-	if not RunManager.spend_gold(CARD_PACK_COST):
+func _show_card_pack_popup(cost: int = 50) -> void:
+	if not RunManager.spend_gold(cost):
 		return
 
 	AudioManager.play_purchase()

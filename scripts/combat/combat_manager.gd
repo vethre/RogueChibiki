@@ -105,6 +105,11 @@ func start_combat(char_data: CharacterData) -> void:
 	enemy_block = 0
 	enemy_weakened = 0
 
+	# Apply pre-combat weaken from shop items
+	if RunManager.next_enemy_weakened > 0:
+		enemy_weakened = RunManager.next_enemy_weakened
+		RunManager.next_enemy_weakened = 0
+
 	draw_pile = deck.duplicate()
 	draw_pile.shuffle()
 	discard_pile.clear()

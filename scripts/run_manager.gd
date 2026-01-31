@@ -127,6 +127,7 @@ var bonus_damage: int = 0
 var bonus_block: int = 0
 var gold_multiplier: float = 1.0
 var heal_on_kill: int = 0
+var next_enemy_weakened: int = 0  # Applied at start of next combat
 
 # Stats for this run
 var enemies_defeated: int = 0
@@ -219,6 +220,7 @@ func start_new_run(character: CharacterData, custom_seed: String = "") -> void:
 	bonus_block = 0
 	gold_multiplier = 1.0
 	heal_on_kill = 0
+	next_enemy_weakened = 0
 
 	# Reset stats
 	enemies_defeated = 0

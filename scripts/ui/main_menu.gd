@@ -4,7 +4,7 @@ extends Control
 @onready var settings_button: Button = $SafeArea/MainHBox/RightPanel/SettingsButton
 @onready var credits_button: Button = $SafeArea/MainHBox/RightPanel/CreditsButton
 @onready var skins_button: Button = $SafeArea/MainHBox/RightPanel/SkinsButton
-@onready var info_button: Button = $SafeArea/MainHBox/RightPanel/InfoButton
+@onready var web_button: Button = $SafeArea/MainHBox/RightPanel/InfoButton  # Renamed to Web
 @onready var quit_button: Button = $SafeArea/MainHBox/RightPanel/QuitButton
 @onready var bouquet_label: Label = $BouquetPanel/HBox/BouquetLabel
 
@@ -26,7 +26,7 @@ func _ready() -> void:
 	settings_button.pressed.connect(_on_settings_pressed)
 	credits_button.pressed.connect(_on_credits_pressed)
 	skins_button.pressed.connect(_on_skins_pressed)
-	info_button.pressed.connect(_on_info_pressed)
+	web_button.pressed.connect(_on_web_pressed)
 	quit_button.pressed.connect(_on_quit_pressed)
 
 	# Refresh UI when language changes
@@ -48,7 +48,7 @@ func _update_ui_text() -> void:
 	settings_button.text = Localization.t("MENU_SETTINGS")
 	credits_button.text = Localization.t("MENU_CREDITS")
 	skins_button.text = Localization.t("MENU_SKINS")
-	info_button.text = Localization.t("MENU_INFO")
+	web_button.text = "WEB"  # Opens roguechibiki.space
 	quit_button.text = Localization.t("MENU_QUIT")
 
 func _update_bouquets() -> void:
@@ -94,7 +94,7 @@ func _animate_entrance() -> void:
 	settings_button.modulate.a = 0
 	credits_button.modulate.a = 0
 	skins_button.modulate.a = 0
-	info_button.modulate.a = 0
+	web_button.modulate.a = 0
 	quit_button.modulate.a = 0
 	stats_panel.modulate.a = 0
 	logo.modulate.a = 0
@@ -126,7 +126,7 @@ func _animate_entrance() -> void:
 	tween.tween_property(settings_button, "modulate:a", 1.0, 0.2)
 	tween.tween_property(credits_button, "modulate:a", 1.0, 0.2)
 	tween.tween_property(skins_button, "modulate:a", 1.0, 0.2)
-	tween.tween_property(info_button, "modulate:a", 1.0, 0.2)
+	tween.tween_property(web_button, "modulate:a", 1.0, 0.2)
 	tween.tween_property(quit_button, "modulate:a", 1.0, 0.2)
 	tween.tween_property(stats_panel, "modulate:a", 1.0, 0.3)
 
@@ -176,9 +176,9 @@ func _on_skins_pressed() -> void:
 	AudioManager.play_card_pickup()
 	get_tree().change_scene_to_file("res://scenes/ui/skins_scene.tscn")
 
-func _on_info_pressed() -> void:
+func _on_web_pressed() -> void:
 	AudioManager.play_card_pickup()
-	get_tree().change_scene_to_file("res://scenes/ui/info_scene.tscn")
+	OS.shell_open("https://roguechibiki.space")
 
 func _on_quit_pressed() -> void:
 	get_tree().quit()

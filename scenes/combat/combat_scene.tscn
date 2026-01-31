@@ -31,8 +31,8 @@ void fragment() {
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_blur"]
 shader = SubResource("Shader_blur")
-shader_parameter/blur_amount = 3.0
-shader_parameter/darken = 0.25
+shader_parameter/blur_amount = 4.0
+shader_parameter/darken = 0.55
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_topbar"]
 bg_color = Color(0, 0, 0, 0.6)
@@ -40,11 +40,16 @@ corner_radius_bottom_right = 16
 corner_radius_bottom_left = 16
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hpbg"]
-bg_color = Color(0, 0, 0, 0.7)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
+bg_color = Color(0.03, 0.02, 0.05, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.3, 0.25, 0.35, 0.5)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
 bg_color = Color(0, 0, 0, 0.6)
@@ -52,6 +57,20 @@ corner_radius_top_left = 14
 corner_radius_top_right = 14
 corner_radius_bottom_right = 14
 corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_character"]
+bg_color = Color(0.12, 0.09, 0.18, 0.92)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.55, 0.4, 0.75, 0.75)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0.35, 0.18, 0.55, 0.25)
+shadow_size = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_result"]
 bg_color = Color(0.05, 0.03, 0.1, 0.95)
@@ -95,10 +114,10 @@ script = ExtResource("2_manager")
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_left = 8.0
+offset_left = 200.0
 offset_top = 5.0
-offset_right = -8.0
-offset_bottom = 65.0
+offset_right = -200.0
+offset_bottom = 50.0
 grow_horizontal = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_topbar")
 
@@ -107,18 +126,18 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 20.0
-offset_right = -20.0
+offset_left = 16.0
+offset_right = -16.0
 grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
 [node name="GoldContainer" type="HBoxContainer" parent="TopBar/HBox"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 6
 
 [node name="CoinIcon" type="TextureRect" parent="TopBar/HBox/GoldContainer"]
-custom_minimum_size = Vector2(36, 36)
+custom_minimum_size = Vector2(28, 28)
 layout_mode = 2
 texture = ExtResource("4_coin")
 expand_mode = 1
@@ -127,7 +146,7 @@ stretch_mode = 5
 [node name="GoldLabel" type="Label" parent="TopBar/HBox/GoldContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 20
 text = "100"
 vertical_alignment = 1
 
@@ -137,19 +156,19 @@ size_flags_horizontal = 3
 
 [node name="StageInfo" type="VBoxContainer" parent="TopBar/HBox"]
 layout_mode = 2
-theme_override_constants/separation = 0
+theme_override_constants/separation = -2
 
 [node name="StageLabel" type="Label" parent="TopBar/HBox/StageInfo"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 0.95)
-theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+theme_override_font_sizes/font_size = 16
 text = "Stage 1 | Floor 2"
 horizontal_alignment = 1
 
 [node name="EncounterLabel" type="Label" parent="TopBar/HBox/StageInfo"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 13
 text = "BOSS BATTLE!"
 horizontal_alignment = 1
 
@@ -159,49 +178,50 @@ size_flags_horizontal = 3
 
 [node name="ScoreContainer" type="HBoxContainer" parent="TopBar/HBox"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 6
 
 [node name="ScoreIcon" type="Label" parent="TopBar/HBox/ScoreContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.9, 1, 0.9)
-theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.7, 0.9, 1, 0.7)
+theme_override_font_sizes/font_size = 12
 text = "SCORE"
 vertical_alignment = 1
 
 [node name="ScoreLabel" type="Label" parent="TopBar/HBox/ScoreContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.8, 0.95, 1, 1)
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 20
 text = "0"
 vertical_alignment = 1
 
-[node name="PlayerArea" type="Control" parent="."]
+[node name="PlayerArea" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = 0
-offset_left = 8.0
-offset_top = 75.0
-offset_right = 190.0
-offset_bottom = 340.0
+offset_left = 50.0
+offset_top = 175.0
+offset_right = 280.0
+offset_bottom = 450.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_character")
 
 [node name="Portrait" type="TextureRect" parent="PlayerArea"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -80.0
-offset_top = 5.0
-offset_right = 80.0
-offset_bottom = 165.0
+offset_left = -95.0
+offset_top = 12.0
+offset_right = 95.0
+offset_bottom = 192.0
 grow_horizontal = 2
 expand_mode = 1
 stretch_mode = 5
 
 [node name="HPContainer" type="Panel" parent="PlayerArea"]
 layout_mode = 1
-offset_left = 5.0
-offset_top = 175.0
-offset_right = 177.0
-offset_bottom = 220.0
+offset_left = 15.0
+offset_top = 200.0
+offset_right = 215.0
+offset_bottom = 245.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_hpbg")
 
 [node name="HPBar" type="ProgressBar" parent="PlayerArea/HPContainer"]
@@ -226,8 +246,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(1, 1, 1, 0.95)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.6)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 18
 text = "28 / 70"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -235,14 +257,14 @@ vertical_alignment = 1
 [node name="BlockLabel" type="Label" parent="PlayerArea"]
 visible = false
 layout_mode = 1
-offset_left = 130.0
-offset_top = 120.0
-offset_right = 180.0
-offset_bottom = 165.0
-theme_override_colors/font_color = Color(0.3, 0.6, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 32
+offset_left = 155.0
+offset_top = 145.0
+offset_right = 210.0
+offset_bottom = 185.0
+theme_override_colors/font_color = Color(0.4, 0.7, 1, 0.95)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 28
 text = "5"
 horizontal_alignment = 1
 
@@ -251,10 +273,10 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -190.0
-offset_top = 75.0
-offset_right = -8.0
-offset_bottom = 340.0
+offset_left = -220.0
+offset_top = 120.0
+offset_right = -60.0
+offset_bottom = 320.0
 grow_horizontal = 0
 
 [node name="EnemySprite" type="TextureRect" parent="EnemyArea"]
@@ -262,20 +284,20 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -80.0
+offset_left = -60.0
 offset_top = 5.0
-offset_right = 80.0
-offset_bottom = 165.0
+offset_right = 60.0
+offset_bottom = 125.0
 grow_horizontal = 2
 expand_mode = 1
 stretch_mode = 5
 
 [node name="HPContainer" type="Panel" parent="EnemyArea"]
 layout_mode = 1
-offset_left = 5.0
-offset_top = 175.0
-offset_right = 177.0
-offset_bottom = 220.0
+offset_left = 10.0
+offset_top = 135.0
+offset_right = 150.0
+offset_bottom = 175.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_hpbg")
 
 [node name="HPBar" type="ProgressBar" parent="EnemyArea/HPContainer"]
@@ -300,8 +322,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(1, 1, 1, 0.95)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.6)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 18
 text = "28 / 38"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -309,36 +333,40 @@ vertical_alignment = 1
 [node name="BlockLabel" type="Label" parent="EnemyArea"]
 visible = false
 layout_mode = 1
-offset_left = 130.0
-offset_top = 120.0
-offset_right = 180.0
-offset_bottom = 165.0
-theme_override_colors/font_color = Color(0.3, 0.6, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 32
+offset_left = 100.0
+offset_top = 85.0
+offset_right = 145.0
+offset_bottom = 120.0
+theme_override_colors/font_color = Color(0.4, 0.7, 1, 0.95)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 22
 text = "5"
 horizontal_alignment = 1
 
 [node name="IntentLabel" type="Label" parent="EnemyArea"]
 layout_mode = 1
-offset_left = 5.0
-offset_top = 230.0
-offset_right = 177.0
-offset_bottom = 260.0
-theme_override_colors/font_color = Color(1, 0.7, 0.3, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
-theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 20
+offset_left = 10.0
+offset_top = 178.0
+offset_right = 150.0
+offset_bottom = 200.0
+theme_override_colors/font_color = Color(1, 0.65, 0.35, 0.9)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.8)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 16
 text = "Attack 8"
 horizontal_alignment = 1
 
 [node name="EnergyPanel" type="Panel" parent="."]
 layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
 offset_left = 8.0
-offset_top = 350.0
-offset_right = 250.0
-offset_bottom = 420.0
+offset_top = -270.0
+offset_right = 180.0
+offset_bottom = -220.0
+grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
 [node name="EnergyContainer" type="HBoxContainer" parent="EnergyPanel"]
@@ -346,20 +374,20 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 8.0
-offset_right = -10.0
-offset_bottom = -8.0
+offset_left = 8.0
+offset_top = 4.0
+offset_right = -8.0
+offset_bottom = -4.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 6
 
 [node name="RelicsPanel" type="Panel" parent="."]
 layout_mode = 1
 offset_left = 8.0
-offset_top = 430.0
-offset_right = 250.0
-offset_bottom = 500.0
+offset_top = 60.0
+offset_right = 180.0
+offset_bottom = 115.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
 [node name="RelicsContainer" type="HBoxContainer" parent="RelicsPanel"]
@@ -367,71 +395,50 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 8.0
-offset_right = -10.0
-offset_bottom = -8.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 10
-
-[node name="DeckInfo" type="VBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -130.0
-offset_top = 350.0
+offset_left = 8.0
+offset_top = 4.0
 offset_right = -8.0
-offset_bottom = 500.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 6
+
+[node name="DeckInfo" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -160.0
+offset_top = -220.0
+offset_right = -8.0
+offset_bottom = -190.0
 grow_horizontal = 0
-theme_override_constants/separation = 10
+grow_vertical = 0
+theme_override_constants/separation = 12
 
-[node name="DrawPile" type="Panel" parent="DeckInfo"]
-custom_minimum_size = Vector2(0, 60)
+[node name="DrawPile" type="Label" parent="DeckInfo"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
-
-[node name="Label" type="Label" parent="DeckInfo/DrawPile"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
-theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.6, 0.75, 0.9, 0.7)
+theme_override_font_sizes/font_size = 13
 text = "Draw: 10"
-horizontal_alignment = 1
-vertical_alignment = 1
 
-[node name="DiscardPile" type="Panel" parent="DeckInfo"]
-custom_minimum_size = Vector2(0, 60)
+[node name="DiscardPile" type="Label" parent="DeckInfo"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
-
-[node name="Label" type="Label" parent="DeckInfo/DiscardPile"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(0.8, 0.75, 0.9, 1)
-theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.65, 0.55, 0.75, 0.7)
+theme_override_font_sizes/font_size = 13
 text = "Discard: 0"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="TurnBanner" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -120.0
-offset_top = 260.0
-offset_right = 120.0
-offset_bottom = 310.0
+offset_left = -100.0
+offset_top = 280.0
+offset_right = 100.0
+offset_bottom = 320.0
 grow_horizontal = 2
 
 [node name="TurnLabel" type="Label" parent="TurnBanner"]
@@ -442,9 +449,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(0.4, 1, 0.5, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 30
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.85)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 24
 text = "YOUR TURN"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -462,34 +469,27 @@ script = ExtResource("3_hand")
 
 [node name="MenuButton" type="Button" parent="."]
 layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
 offset_left = 8.0
-offset_top = -65.0
-offset_right = 90.0
-offset_bottom = -15.0
-grow_vertical = 0
-theme_override_font_sizes/font_size = 14
+offset_top = 8.0
+offset_right = 70.0
+offset_bottom = 45.0
+theme_override_font_sizes/font_size = 12
 text = "MENU"
 
 [node name="DebugButton" type="Button" parent="."]
 visible = false
 layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 98.0
-offset_top = -65.0
-offset_right = 140.0
-offset_bottom = -15.0
-grow_vertical = 0
+offset_left = 75.0
+offset_top = 8.0
+offset_right = 110.0
+offset_bottom = 45.0
 theme_override_colors/font_color = Color(1, 0.7, 0.3, 1)
 theme_override_font_sizes/font_size = 16
 text = "D"
 
 [node name="DebugPanel" type="Panel" parent="."]
 visible = false
+z_index = 100
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -780,6 +780,7 @@ text = "Main Menu"
 
 [node name="PausePanel" type="Panel" parent="."]
 visible = false
+z_index = 100
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5

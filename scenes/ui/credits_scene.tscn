@@ -168,6 +168,24 @@ theme_override_font_sizes/font_size = 16
 text = "Purchase - CrunchpixStudio (freesound)"
 horizontal_alignment = 1
 
+[node name="FontSection" type="VBoxContainer" parent="SafeArea/MainVBox/CreditsPanel/CreditsMargin/CreditsScroll/CreditsContent"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="FontTitle" type="Label" parent="SafeArea/MainVBox/CreditsPanel/CreditsMargin/CreditsScroll/CreditsContent/FontSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.6, 0.8, 1)
+theme_override_font_sizes/font_size = 20
+text = "FONT"
+horizontal_alignment = 1
+
+[node name="FontCredit" type="Label" parent="SafeArea/MainVBox/CreditsPanel/CreditsMargin/CreditsScroll/CreditsContent/FontSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.85, 0.95, 1)
+theme_override_font_sizes/font_size = 16
+text = "Comfortaa - Johan Aakerlund (OFL License)"
+horizontal_alignment = 1
+
 [node name="ToolsSection" type="VBoxContainer" parent="SafeArea/MainVBox/CreditsPanel/CreditsMargin/CreditsScroll/CreditsContent"]
 layout_mode = 2
 theme_override_constants/separation = 8
@@ -184,6 +202,24 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.85, 0.95, 1)
 theme_override_font_sizes/font_size = 16
 text = "Godot Engine 4.5"
+horizontal_alignment = 1
+
+[node name="WebsiteSection" type="VBoxContainer" parent="SafeArea/MainVBox/CreditsPanel/CreditsMargin/CreditsScroll/CreditsContent"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="WebsiteTitle" type="Label" parent="SafeArea/MainVBox/CreditsPanel/CreditsMargin/CreditsScroll/CreditsContent/WebsiteSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "WEBSITE"
+horizontal_alignment = 1
+
+[node name="WebsiteLink" type="Label" parent="SafeArea/MainVBox/CreditsPanel/CreditsMargin/CreditsScroll/CreditsContent/WebsiteSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "roguechibiki.space"
 horizontal_alignment = 1
 
 [node name="BackButton" type="Button" parent="SafeArea/MainVBox"]

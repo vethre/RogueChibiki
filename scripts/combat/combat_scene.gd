@@ -30,9 +30,9 @@ extends Control
 var consumables_panel: Panel = null
 var consumables_container: HBoxContainer = null
 
-# Deck info
-@onready var draw_pile_label: Label = $DeckInfo/DrawPile/Label
-@onready var discard_pile_label: Label = $DeckInfo/DiscardPile/Label
+# Deck info (minimal labels)
+@onready var draw_pile_label: Label = $DeckInfo/DrawPile
+@onready var discard_pile_label: Label = $DeckInfo/DiscardPile
 
 # Turn indicator
 @onready var turn_label: Label = $TurnBanner/TurnLabel
@@ -232,44 +232,32 @@ func _update_relics_display() -> void:
 		relics_container.add_child(relic_btn)
 
 func _setup_consumables_panel() -> void:
-	# Create consumables panel next to the deck info
+	# Create consumables panel near relics (top left, below relics)
 	consumables_panel = Panel.new()
-	consumables_panel.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	consumables_panel.anchor_left = 1.0
-	consumables_panel.offset_left = -130
-	consumables_panel.offset_top = 510
-	consumables_panel.offset_right = -8
-	consumables_panel.offset_bottom = 580
+	consumables_panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	consumables_panel.offset_left = 8
+	consumables_panel.offset_top = 120
+	consumables_panel.offset_right = 180
+	consumables_panel.offset_bottom = 170
 
 	var panel_style = StyleBoxFlat.new()
-	panel_style.bg_color = Color(0, 0, 0, 0.6)
-	panel_style.corner_radius_top_left = 14
-	panel_style.corner_radius_top_right = 14
-	panel_style.corner_radius_bottom_left = 14
-	panel_style.corner_radius_bottom_right = 14
+	panel_style.bg_color = Color(0, 0, 0, 0.5)
+	panel_style.corner_radius_top_left = 12
+	panel_style.corner_radius_top_right = 12
+	panel_style.corner_radius_bottom_left = 12
+	panel_style.corner_radius_bottom_right = 12
 	consumables_panel.add_theme_stylebox_override("panel", panel_style)
 	add_child(consumables_panel)
 
-	var vbox = VBoxContainer.new()
-	vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
-	vbox.offset_left = 6
-	vbox.offset_right = -6
-	vbox.offset_top = 4
-	vbox.offset_bottom = -4
-	vbox.add_theme_constant_override("separation", 2)
-	consumables_panel.add_child(vbox)
-
-	var label = Label.new()
-	label.text = "Items"
-	label.add_theme_font_size_override("font_size", 12)
-	label.add_theme_color_override("font_color", Color(0.7, 0.7, 0.8))
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	vbox.add_child(label)
-
 	consumables_container = HBoxContainer.new()
+	consumables_container.set_anchors_preset(Control.PRESET_FULL_RECT)
+	consumables_container.offset_left = 6
+	consumables_container.offset_right = -6
+	consumables_container.offset_top = 4
+	consumables_container.offset_bottom = -4
 	consumables_container.alignment = BoxContainer.ALIGNMENT_CENTER
-	consumables_container.add_theme_constant_override("separation", 8)
-	vbox.add_child(consumables_container)
+	consumables_container.add_theme_constant_override("separation", 6)
+	consumables_panel.add_child(consumables_container)
 
 func _update_consumables_display() -> void:
 	if not consumables_container:
@@ -652,19 +640,19 @@ func _on_turn_changed(is_player_turn: bool) -> void:
 func _slide_in_banner() -> void:
 	var banner = $TurnBanner
 	banner.modulate.a = 0
-	banner.scale = Vector2(0.8, 0.8)
+	banner.scale = Vector2(0.85, 0.85)
 	banner.pivot_offset = banner.size / 2
 
 	var tween = create_tween()
 	tween.set_parallel(true)
-	tween.tween_property(banner, "scale", Vector2(1.0, 1.0), 0.25).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
-	tween.tween_property(banner, "modulate:a", 1.0, 0.2)
+	tween.tween_property(banner, "scale", Vector2(1.0, 1.0), 0.2).set_ease(Tween.EASE_OUT)
+	tween.tween_property(banner, "modulate:a", 0.9, 0.15)
 
 	await tween.finished
-	await get_tree().create_timer(0.4).timeout
+	await get_tree().create_timer(0.3).timeout
 
 	var fade_tween = create_tween()
-	fade_tween.tween_property(banner, "modulate:a", 0.3, 0.3)
+	fade_tween.tween_property(banner, "modulate:a", 0.0, 0.4)
 
 func _on_end_turn_pressed() -> void:
 	combat_manager.end_player_turn()
