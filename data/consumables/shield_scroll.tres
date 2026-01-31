@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ConsumableData" load_steps=2 format=3 uid="uid://consumable_shield"]
+
+[ext_resource type="Script" path="res://scripts/consumables/consumable_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+consumable_name = "Shield Scroll"
+description = "Gain 12 block"
+effect_type = 3
+effect_value = 12

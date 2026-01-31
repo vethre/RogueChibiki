@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(tree:*)",
+      "Bash(dir \"C:\\\\Users\\\\Sasha\\\\Documents\\\\rogue-chibiki\\\\assets\\\\icons\")",
+      "Bash(find:*)",
+      "Bash(dir:*)",
+      "Bash(del \"C:\\\\Users\\\\Sasha\\\\Documents\\\\rogue-chibiki\\\\localization\\\\translations.csv.import\")",
+      "Bash(powershell -Command:*)",
+      "Bash(du:*)",
+      "Bash(findstr:*)",
+      "Bash(ls:*)",
+      "Bash(forfiles /S /M *.png /C \"cmd /c echo @fsize @path\")"
+    ]
+  }
+}

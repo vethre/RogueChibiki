@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ConsumableData" load_steps=2 format=3 uid="uid://consumable_bomb"]
+
+[ext_resource type="Script" path="res://scripts/consumables/consumable_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+consumable_name = "Bomb"
+description = "Deal 15 damage to enemy"
+effect_type = 2
+effect_value = 15

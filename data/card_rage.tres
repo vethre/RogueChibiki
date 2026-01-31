@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=2 format=3 uid="uid://bw5doc8n4omea"]
+
+[ext_resource type="Script" uid="uid://ysbw5184i56c" path="res://scripts/cards/card_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+card_name = "Rage"
+energy_cost = 0
+description = "Deal 4 damage. Draw 1 card."
+damage = 4
+draw_cards = 1

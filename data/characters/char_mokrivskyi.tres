@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=4 format=3 uid="uid://dwyb83ubhvunt"]
+
+[ext_resource type="Script" uid="uid://bk4vujbglf4lp" path="res://scripts/characters/character_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bqm63hjfdgf8v" path="res://assets/mokrivskyi.png" id="2_portrait"]
+[ext_resource type="Resource" path="res://data/card_drain_life.tres" id="3_special"]
+
+[resource]
+script = ExtResource("1_script")
+character_name = "Mokrivskyi"
+portrait = ExtResource("2_portrait")
+passive_type = 6
+passive_value = 15
+passive_description = "Heal for 15% of damage dealt"
+starting_hp = 40
+strike_count = 6
+defend_count = 2
+special_cards = Array[Resource]([ExtResource("3_special")])
+is_unlocked = false
+unlock_cost = 12000

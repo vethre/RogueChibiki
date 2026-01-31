@@ -1,0 +1,841 @@
+[gd_scene load_steps=12 format=3 uid="uid://combat001"]
+
+[ext_resource type="Script" uid="uid://doh53ydn0fu3m" path="res://scripts/combat/combat_scene.gd" id="1_scene"]
+[ext_resource type="Script" uid="uid://cdnhore2vw762" path="res://scripts/combat/combat_manager.gd" id="2_manager"]
+[ext_resource type="Script" uid="uid://ppgetrku07yu" path="res://scripts/combat/hand.gd" id="3_hand"]
+[ext_resource type="Texture2D" uid="uid://b0hp0h7f4rrlx" path="res://assets/coin.png" id="4_coin"]
+[ext_resource type="Texture2D" uid="uid://dgvjelistqlna" path="res://assets/bg_combat.png" id="6_bgcombat"]
+
+[sub_resource type="Shader" id="Shader_blur"]
+code = "shader_type canvas_item;
+
+uniform float blur_amount : hint_range(0.0, 5.0) = 2.0;
+uniform float darken : hint_range(0.0, 1.0) = 0.3;
+
+void fragment() {
+    vec2 ps = TEXTURE_PIXEL_SIZE;
+    vec4 color = vec4(0.0);
+
+    float weights[9] = {0.05, 0.09, 0.12, 0.15, 0.18, 0.15, 0.12, 0.09, 0.05};
+
+    for (int i = -4; i <= 4; i++) {
+        for (int j = -4; j <= 4; j++) {
+            vec2 offset = vec2(float(i), float(j)) * ps * blur_amount;
+            color += texture(TEXTURE, UV + offset) * weights[i + 4] * weights[j + 4];
+        }
+    }
+
+    color.rgb *= (1.0 - darken);
+    COLOR = color;
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_blur"]
+shader = SubResource("Shader_blur")
+shader_parameter/blur_amount = 3.0
+shader_parameter/darken = 0.25
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_topbar"]
+bg_color = Color(0, 0, 0, 0.6)
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hpbg"]
+bg_color = Color(0, 0, 0, 0.7)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0, 0, 0, 0.6)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_result"]
+bg_color = Color(0.05, 0.03, 0.1, 0.95)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.8, 0.5, 1, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+shadow_color = Color(0.5, 0.2, 0.8, 0.3)
+shadow_size = 12
+
+[node name="CombatScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_scene")
+
+[node name="Background" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_blur")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("6_bgcombat")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="CombatManager" type="Node" parent="."]
+script = ExtResource("2_manager")
+
+[node name="TopBar" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 8.0
+offset_top = 5.0
+offset_right = -8.0
+offset_bottom = 65.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_topbar")
+
+[node name="HBox" type="HBoxContainer" parent="TopBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_right = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="GoldContainer" type="HBoxContainer" parent="TopBar/HBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="CoinIcon" type="TextureRect" parent="TopBar/HBox/GoldContainer"]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+texture = ExtResource("4_coin")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GoldLabel" type="Label" parent="TopBar/HBox/GoldContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
+theme_override_font_sizes/font_size = 28
+text = "100"
+vertical_alignment = 1
+
+[node name="Spacer1" type="Control" parent="TopBar/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="StageInfo" type="VBoxContainer" parent="TopBar/HBox"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="StageLabel" type="Label" parent="TopBar/HBox/StageInfo"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.95)
+theme_override_font_sizes/font_size = 20
+text = "Stage 1 | Floor 2"
+horizontal_alignment = 1
+
+[node name="EncounterLabel" type="Label" parent="TopBar/HBox/StageInfo"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
+theme_override_font_sizes/font_size = 16
+text = "BOSS BATTLE!"
+horizontal_alignment = 1
+
+[node name="Spacer2" type="Control" parent="TopBar/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScoreContainer" type="HBoxContainer" parent="TopBar/HBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ScoreIcon" type="Label" parent="TopBar/HBox/ScoreContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.9, 1, 0.9)
+theme_override_font_sizes/font_size = 16
+text = "SCORE"
+vertical_alignment = 1
+
+[node name="ScoreLabel" type="Label" parent="TopBar/HBox/ScoreContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 26
+text = "0"
+vertical_alignment = 1
+
+[node name="PlayerArea" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 0
+offset_left = 8.0
+offset_top = 75.0
+offset_right = 190.0
+offset_bottom = 340.0
+
+[node name="Portrait" type="TextureRect" parent="PlayerArea"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -80.0
+offset_top = 5.0
+offset_right = 80.0
+offset_bottom = 165.0
+grow_horizontal = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="HPContainer" type="Panel" parent="PlayerArea"]
+layout_mode = 1
+offset_left = 5.0
+offset_top = 175.0
+offset_right = 177.0
+offset_bottom = 220.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_hpbg")
+
+[node name="HPBar" type="ProgressBar" parent="PlayerArea/HPContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = -6.0
+offset_bottom = -6.0
+grow_horizontal = 2
+grow_vertical = 2
+max_value = 70.0
+value = 28.0
+show_percentage = false
+
+[node name="HPLabel" type="Label" parent="PlayerArea/HPContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "28 / 70"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BlockLabel" type="Label" parent="PlayerArea"]
+visible = false
+layout_mode = 1
+offset_left = 130.0
+offset_top = 120.0
+offset_right = 180.0
+offset_bottom = 165.0
+theme_override_colors/font_color = Color(0.3, 0.6, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 32
+text = "5"
+horizontal_alignment = 1
+
+[node name="EnemyArea" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -190.0
+offset_top = 75.0
+offset_right = -8.0
+offset_bottom = 340.0
+grow_horizontal = 0
+
+[node name="EnemySprite" type="TextureRect" parent="EnemyArea"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -80.0
+offset_top = 5.0
+offset_right = 80.0
+offset_bottom = 165.0
+grow_horizontal = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="HPContainer" type="Panel" parent="EnemyArea"]
+layout_mode = 1
+offset_left = 5.0
+offset_top = 175.0
+offset_right = 177.0
+offset_bottom = 220.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_hpbg")
+
+[node name="HPBar" type="ProgressBar" parent="EnemyArea/HPContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = -6.0
+offset_bottom = -6.0
+grow_horizontal = 2
+grow_vertical = 2
+max_value = 38.0
+value = 28.0
+show_percentage = false
+
+[node name="HPLabel" type="Label" parent="EnemyArea/HPContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "28 / 38"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BlockLabel" type="Label" parent="EnemyArea"]
+visible = false
+layout_mode = 1
+offset_left = 130.0
+offset_top = 120.0
+offset_right = 180.0
+offset_bottom = 165.0
+theme_override_colors/font_color = Color(0.3, 0.6, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 32
+text = "5"
+horizontal_alignment = 1
+
+[node name="IntentLabel" type="Label" parent="EnemyArea"]
+layout_mode = 1
+offset_left = 5.0
+offset_top = 230.0
+offset_right = 177.0
+offset_bottom = 260.0
+theme_override_colors/font_color = Color(1, 0.7, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 20
+text = "Attack 8"
+horizontal_alignment = 1
+
+[node name="EnergyPanel" type="Panel" parent="."]
+layout_mode = 1
+offset_left = 8.0
+offset_top = 350.0
+offset_right = 250.0
+offset_bottom = 420.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="EnergyContainer" type="HBoxContainer" parent="EnergyPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 8.0
+offset_right = -10.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="RelicsPanel" type="Panel" parent="."]
+layout_mode = 1
+offset_left = 8.0
+offset_top = 430.0
+offset_right = 250.0
+offset_bottom = 500.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="RelicsContainer" type="HBoxContainer" parent="RelicsPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 8.0
+offset_right = -10.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="DeckInfo" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -130.0
+offset_top = 350.0
+offset_right = -8.0
+offset_bottom = 500.0
+grow_horizontal = 0
+theme_override_constants/separation = 10
+
+[node name="DrawPile" type="Panel" parent="DeckInfo"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="Label" type="Label" parent="DeckInfo/DrawPile"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "Draw: 10"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DiscardPile" type="Panel" parent="DeckInfo"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="Label" type="Label" parent="DeckInfo/DiscardPile"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.8, 0.75, 0.9, 1)
+theme_override_font_sizes/font_size = 20
+text = "Discard: 0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TurnBanner" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -120.0
+offset_top = 260.0
+offset_right = 120.0
+offset_bottom = 310.0
+grow_horizontal = 2
+
+[node name="TurnLabel" type="Label" parent="TurnBanner"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.4, 1, 0.5, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 30
+text = "YOUR TURN"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Hand" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -220.0
+grow_horizontal = 2
+grow_vertical = 0
+script = ExtResource("3_hand")
+
+[node name="MenuButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -65.0
+offset_right = 90.0
+offset_bottom = -15.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 14
+text = "MENU"
+
+[node name="DebugButton" type="Button" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 98.0
+offset_top = -65.0
+offset_right = 140.0
+offset_bottom = -15.0
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 0.7, 0.3, 1)
+theme_override_font_sizes/font_size = 16
+text = "D"
+
+[node name="DebugPanel" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -140.0
+offset_top = -220.0
+offset_right = 140.0
+offset_bottom = 220.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(140, 220)
+theme_override_styles/panel = SubResource("StyleBoxFlat_result")
+
+[node name="DebugScroll" type="ScrollContainer" parent="DebugPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+
+[node name="DebugVBox" type="VBoxContainer" parent="DebugPanel/DebugScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="DebugTitle" type="Label" parent="DebugPanel/DebugScroll/DebugVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.7, 0.3, 1)
+theme_override_font_sizes/font_size = 18
+text = "DEBUG CHEATS"
+horizontal_alignment = 1
+
+[node name="SkipStageBtn" type="Button" parent="DebugPanel/DebugScroll/DebugVBox"]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Win Combat"
+
+[node name="AddGoldBtn" type="Button" parent="DebugPanel/DebugScroll/DebugVBox"]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "+100 Gold"
+
+[node name="HealPlayerBtn" type="Button" parent="DebugPanel/DebugScroll/DebugVBox"]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Full Heal"
+
+[node name="AddEnergyBtn" type="Button" parent="DebugPanel/DebugScroll/DebugVBox"]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "+3 Energy"
+
+[node name="DrawCardsBtn" type="Button" parent="DebugPanel/DebugScroll/DebugVBox"]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Draw 3 Cards"
+
+[node name="AddMaxHPBtn" type="Button" parent="DebugPanel/DebugScroll/DebugVBox"]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "+20 Max HP"
+
+[node name="GodModeBtn" type="Button" parent="DebugPanel/DebugScroll/DebugVBox"]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
+theme_override_font_sizes/font_size = 13
+text = "God Mode: OFF"
+
+[node name="SkipToStageBtn" type="Button" parent="DebugPanel/DebugScroll/DebugVBox"]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "Skip +10 Stages"
+
+[node name="CloseDebugBtn" type="Button" parent="DebugPanel/DebugScroll/DebugVBox"]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.8, 1)
+theme_override_font_sizes/font_size = 13
+text = "Close"
+
+[node name="EndTurnButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -75.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 22
+text = "END TURN"
+
+[node name="FXLayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="DamageLabel" type="Label" parent="FXLayer"]
+visible = false
+offset_right = 140.0
+offset_bottom = 60.0
+pivot_offset = Vector2(70, 30)
+theme_override_colors/font_color = Color(1, 0.3, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 42
+text = "-10"
+horizontal_alignment = 1
+
+[node name="EffectLabel" type="Label" parent="FXLayer"]
+visible = false
+offset_right = 200.0
+offset_bottom = 55.0
+pivot_offset = Vector2(100, 27)
+theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 32
+text = "EFFECT!"
+horizontal_alignment = 1
+
+[node name="OutOfCardsLabel" type="Label" parent="FXLayer"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -45.0
+offset_right = 160.0
+offset_bottom = 45.0
+pivot_offset = Vector2(160, 45)
+theme_override_colors/font_color = Color(1, 0.4, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 38
+text = "OUT OF CARDS!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RelicInfoPopup" type="Panel" parent="FXLayer"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -140.0
+offset_top = -80.0
+offset_right = 140.0
+offset_bottom = 80.0
+pivot_offset = Vector2(140, 80)
+
+[node name="VBox" type="VBoxContainer" parent="FXLayer/RelicInfoPopup"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="RelicName" type="Label" parent="FXLayer/RelicInfoPopup/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
+theme_override_font_sizes/font_size = 22
+text = "Relic Name"
+horizontal_alignment = 1
+
+[node name="RelicDesc" type="Label" parent="FXLayer/RelicInfoPopup/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.95, 1)
+theme_override_font_sizes/font_size = 16
+text = "Relic description goes here."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="TapHint" type="Label" parent="FXLayer/RelicInfoPopup/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.6, 0.7, 1)
+theme_override_font_sizes/font_size = 12
+text = "Tap anywhere to close"
+horizontal_alignment = 1
+
+[node name="ResultPanel" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -170.0
+offset_top = -150.0
+offset_right = 170.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(170, 150)
+theme_override_styles/panel = SubResource("StyleBoxFlat_result")
+
+[node name="ResultLabel" type="Label" parent="ResultPanel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 25.0
+offset_right = 150.0
+offset_bottom = 85.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 44
+text = "VICTORY!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GoldLabel" type="Label" parent="ResultPanel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -110.0
+offset_top = 90.0
+offset_right = 110.0
+offset_bottom = 130.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
+theme_override_font_sizes/font_size = 28
+text = "+25 Gold"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ContinueButton" type="Button" parent="ResultPanel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -130.0
+offset_top = -110.0
+offset_right = 130.0
+offset_bottom = -65.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 20
+text = "Continue"
+
+[node name="MenuButton" type="Button" parent="ResultPanel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -130.0
+offset_top = -55.0
+offset_right = 130.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 20
+text = "Main Menu"
+
+[node name="PausePanel" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -165.0
+offset_right = 150.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_result")
+
+[node name="PauseVBox" type="VBoxContainer" parent="PausePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+
+[node name="PauseTitle" type="Label" parent="PausePanel/PauseVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 28
+text = "PAUSED"
+horizontal_alignment = 1
+
+[node name="ResumeButton" type="Button" parent="PausePanel/PauseVBox"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Resume"
+
+[node name="SettingsButton" type="Button" parent="PausePanel/PauseVBox"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Settings"
+
+[node name="MainMenuButton" type="Button" parent="PausePanel/PauseVBox"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.7, 0.5, 1)
+theme_override_font_sizes/font_size = 20
+text = "Return to Main Menu"
+
+[node name="QuitButton" type="Button" parent="PausePanel/PauseVBox"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.5, 0.5, 1)
+theme_override_font_sizes/font_size = 20
+text = "Quit Game"

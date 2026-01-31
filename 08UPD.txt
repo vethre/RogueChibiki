@@ -1,0 +1,30 @@
+0.8 features:
+
+New Content
+
+New Chibikis added to the roster:
+Evelone, Buster, Mokrisvkyi, Chriswave, Gaechka
+
+Progression Rework
+Finite Run → Infinite Run system
+The main run is now finishable.
+After completion, the game seamlessly transitions into an Infinite Run mode with escalating difficulty and scaling mechanics.
+Infinite Run is optional but rewards mastery and long-term builds.
+
+Run Score System
+Added a Run Score Counter
+Score is finite, not infinite.
+Implemented using IEEE standard numeric representation (stable, predictable, no meme overflows).
+Designed for leaderboards, comparisons, and post-run stats.
+
+Gameplay Enhancements
+New Abilities
+- Fresh active & passive skills with deeper interactions.
+Customizable Deck
+- Players can now tune and adjust their deck, enabling more control over RNG and build direction.
+- Supports synergy-focused and experimental builds.
+
+Design Goals
+- Increase build diversity
+- Make progression feel rewarding, not endless by default
+- Give players a clear goal, then let them break the game afterward

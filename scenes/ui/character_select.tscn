@@ -1,0 +1,192 @@
+[gd_scene load_steps=6 format=3 uid="uid://charselect001"]
+
+[ext_resource type="Script" uid="uid://bsobvdfmlc3tb" path="res://scripts/ui/character_select.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://d3nituw3cuk5g" path="res://assets/ChibiBG.png" id="2_bg"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_left_panel"]
+bg_color = Color(0.06, 0.04, 0.1, 0.95)
+border_width_right = 2
+border_color = Color(0.4, 0.3, 0.6, 0.6)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_right_panel"]
+bg_color = Color(0.08, 0.06, 0.14, 0.9)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn"]
+bg_color = Color(0.2, 0.5, 0.3, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.4, 0.9, 0.5, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[node name="CharacterSelect" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_bg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Overlay" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.5)
+
+[node name="MainHBox" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="LeftPanel" type="PanelContainer" parent="MainHBox"]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_left_panel")
+
+[node name="LeftMargin" type="MarginContainer" parent="MainHBox/LeftPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="LeftVBox" type="VBoxContainer" parent="MainHBox/LeftPanel/LeftMargin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="BackButton" type="Button" parent="MainHBox/LeftPanel/LeftMargin/LeftVBox"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "< Back"
+
+[node name="TitleLabel" type="Label" parent="MainHBox/LeftPanel/LeftMargin/LeftVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
+theme_override_font_sizes/font_size = 22
+text = "CHARACTERS"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MainHBox/LeftPanel/LeftMargin/LeftVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="CharactersGrid" type="GridContainer" parent="MainHBox/LeftPanel/LeftMargin/LeftVBox/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="XPLabel" type="Label" parent="MainHBox/LeftPanel/LeftMargin/LeftVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
+theme_override_font_sizes/font_size = 18
+text = "XP: 0"
+horizontal_alignment = 1
+
+[node name="RightPanel" type="PanelContainer" parent="MainHBox"]
+z_index = -1
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_right_panel")
+
+[node name="RightMargin" type="MarginContainer" parent="MainHBox/RightPanel"]
+z_index = 1
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 20
+
+[node name="PreviewVBox" type="VBoxContainer" parent="MainHBox/RightPanel/RightMargin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="CharacterName" type="Label" parent="MainHBox/RightPanel/RightMargin/PreviewVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.5, 1)
+theme_override_font_sizes/font_size = 36
+text = "Select a Character"
+horizontal_alignment = 1
+
+[node name="SpriteContainer" type="CenterContainer" parent="MainHBox/RightPanel/RightMargin/PreviewVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CharacterSprite" type="TextureRect" parent="MainHBox/RightPanel/RightMargin/PreviewVBox/SpriteContainer"]
+custom_minimum_size = Vector2(350, 350)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PassiveLabel" type="Label" parent="MainHBox/RightPanel/RightMargin/PreviewVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.9, 0.7, 1)
+theme_override_font_sizes/font_size = 20
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="StatsHBox" type="HBoxContainer" parent="MainHBox/RightPanel/RightMargin/PreviewVBox"]
+layout_mode = 2
+theme_override_constants/separation = 30
+alignment = 1
+
+[node name="HPLabel" type="Label" parent="MainHBox/RightPanel/RightMargin/PreviewVBox/StatsHBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.5, 0.5, 1)
+theme_override_font_sizes/font_size = 20
+
+[node name="EnergyLabel" type="Label" parent="MainHBox/RightPanel/RightMargin/PreviewVBox/StatsHBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
+theme_override_font_sizes/font_size = 20
+
+[node name="DeckLabel" type="Label" parent="MainHBox/RightPanel/RightMargin/PreviewVBox/StatsHBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 0.7, 1, 1)
+theme_override_font_sizes/font_size = 20
+
+[node name="Spacer" type="Control" parent="MainHBox/RightPanel/RightMargin/PreviewVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="UnlockCostLabel" type="Label" parent="MainHBox/RightPanel/RightMargin/PreviewVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.3, 1)
+theme_override_font_sizes/font_size = 18
+horizontal_alignment = 1
+
+[node name="StartButton" type="Button" parent="MainHBox/RightPanel/RightMargin/PreviewVBox"]
+custom_minimum_size = Vector2(0, 65)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn")
+text = "START RUN"

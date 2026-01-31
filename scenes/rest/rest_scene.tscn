@@ -1,0 +1,113 @@
+[gd_scene load_steps=2 format=3 uid="uid://rest001"]
+
+[ext_resource type="Script" uid="uid://dv27ixxwcfwmn" path="res://scripts/ui/rest_scene.gd" id="1_script"]
+
+[node name="RestScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.06, 0.08, 0.12, 1)
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 40.0
+offset_right = 150.0
+offset_bottom = 90.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.6, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 38
+text = "REST SITE"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 95.0
+offset_right = 150.0
+offset_bottom = 125.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.6, 0.65, 0.7, 1)
+theme_override_font_sizes/font_size = 18
+text = "Choose one option"
+horizontal_alignment = 1
+
+[node name="TopBar" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 140.0
+offset_right = -20.0
+offset_bottom = 170.0
+grow_horizontal = 2
+theme_override_constants/separation = 50
+alignment = 1
+
+[node name="FloorLabel" type="Label" parent="TopBar"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.9, 1)
+theme_override_font_sizes/font_size = 20
+text = "Floor: 7/10"
+
+[node name="HPLabel" type="Label" parent="TopBar"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
+theme_override_font_sizes/font_size = 20
+text = "HP: 30/50"
+
+[node name="OptionsContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -320.0
+offset_top = -80.0
+offset_right = 320.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 30
+alignment = 1
+
+[node name="RestButton" type="Button" parent="OptionsContainer"]
+custom_minimum_size = Vector2(180, 140)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Rest
+Heal 15 HP"
+
+[node name="UpgradeButton" type="Button" parent="OptionsContainer"]
+custom_minimum_size = Vector2(180, 140)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.85, 0.5, 1)
+theme_override_font_sizes/font_size = 20
+text = "Upgrade
+Enhance a Card"
+
+[node name="TrainButton" type="Button" parent="OptionsContainer"]
+custom_minimum_size = Vector2(180, 140)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Train
++1 Max Energy"

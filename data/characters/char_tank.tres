@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=4 format=3 uid="uid://b3c8xqu3aqr0m"]
+
+[ext_resource type="Script" uid="uid://bk4vujbglf4lp" path="res://scripts/characters/character_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://3nqrng04rqf8" path="res://assets/murzik.PNG" id="2_portrait"]
+[ext_resource type="Resource" path="res://data/card_fortify.tres" id="3_special"]
+
+[resource]
+script = ExtResource("1_script")
+character_name = "Murzik"
+portrait = ExtResource("2_portrait")
+passive_description = "Start each combat with +5 Block"
+starting_hp = 60
+special_cards = Array[Resource]([ExtResource("3_special")])

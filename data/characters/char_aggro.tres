@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=4 format=3 uid="uid://csa0betqav8j5"]
+
+[ext_resource type="Script" uid="uid://bk4vujbglf4lp" path="res://scripts/characters/character_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://djkxwatcrpn30" path="res://assets/dangerlyoha.PNG" id="2_portrait"]
+[ext_resource type="Resource" path="res://data/card_reckless_strike.tres" id="3_special"]
+
+[resource]
+script = ExtResource("1_script")
+character_name = "Dangerlyoha"
+portrait = ExtResource("2_portrait")
+passive_type = 1
+passive_value = 1
+passive_description = "Deal +1 damage with all Attack cards"
+starting_hp = 45
+strike_count = 7
+defend_count = 2
+special_cards = Array[Resource]([ExtResource("3_special")])

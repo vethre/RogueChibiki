@@ -1,0 +1,37 @@
+NEW FEATURES FOR v0.9.5
+
+Relics/Artifacts
+- Passive items collected during runs
+- Examples:
+  - "Lucky Coin" - +10% gold from all sources
+  - "Thick Skin" - Start each combat with 3 block
+  - "Energy Drink" - +1 energy on first turn only
+- Obtained from: Elite rewards, boss rewards, shops, events
+
+Card Upgrades
+- Upgrade cards at rest sites or shops
+- Upgraded cards have enhanced effects:
+  - Strike → Strike+ (7 damage → 10 damage)
+  - Defend → Defend+ (5 block → 8 block)
+- Visual indicator for upgraded cards
+
+Events (Random Encounters)
+- Non-combat encounters between fights
+- Examples:
+  - "Mysterious Stranger" - Trade HP for gold or card
+  - "Abandoned Chest" - Risk trap for reward
+  - "Training Dummy" - Upgrade a card for free
+  - "Shady Merchant" - Cheap prices but cursed cards
+
+New Cards
+- **Character-Specific Cards** - Unique cards only available to certain characters
+- **Rare Cards** - Powerful cards with low drop rates in shops/rewards
+- **Curse Cards** - Negative cards added to deck as penalties (from events/elites)
+
+Skins
+- Spring Collection (Main Menu new pop-up banner w/ skins): Spring Chriswave, Spring Gaechka & Spring Dangerlyoha
+- Buy skins with new valute: Bouquets
+- Bouquets can be obtained while finishing finite run, and every infinite 10th stage
+
+FIXES
+- Friends told me to increase UI because it is small visible (text, sprites, etc)

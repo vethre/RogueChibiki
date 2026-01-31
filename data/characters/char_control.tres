@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=4 format=3 uid="uid://cdi32t8xka4q5"]
+
+[ext_resource type="Script" uid="uid://bk4vujbglf4lp" path="res://scripts/characters/character_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bujsdol7q52x6" path="res://assets/morpheya.PNG" id="2_portrait"]
+[ext_resource type="Resource" path="res://data/card_mind_crush.tres" id="3_special"]
+
+[resource]
+script = ExtResource("1_script")
+character_name = "Morpheya"
+portrait = ExtResource("2_portrait")
+passive_type = 2
+passive_value = 2
+passive_description = "Enemies deal -2 damage on turn 1"
+strike_count = 4
+defend_count = 4
+special_cards = Array[Resource]([ExtResource("3_special")])
+is_unlocked = false
+unlock_cost = 2500

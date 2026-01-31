@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=4 format=3 uid="uid://cbim2cwrhdxds"]
+
+[ext_resource type="Script" uid="uid://bk4vujbglf4lp" path="res://scripts/characters/character_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://c6p8g6obelxqy" path="res://assets/yuuechka.PNG" id="2_portrait"]
+[ext_resource type="Resource" path="res://data/card_flurry.tres" id="3_special"]
+
+[resource]
+script = ExtResource("1_script")
+character_name = "Yuuechka"
+portrait = ExtResource("2_portrait")
+passive_type = 3
+passive_value = 3
+passive_description = "Every 3rd card played each turn costs 0"
+starting_hp = 45
+special_cards = Array[Resource]([ExtResource("3_special")])
+is_unlocked = false
+unlock_cost = 5000

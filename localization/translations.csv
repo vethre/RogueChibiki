@@ -1,0 +1,212 @@
+keys,en,uk,ru
+MENU_PLAY,Play,Грати,Играть
+MENU_SETTINGS,Settings,Налаштування,Настройки
+MENU_CREDITS,Credits,Подяки,Благодарности
+MENU_SKINS,Skins,Скіни,Скины
+MENU_QUIT,Quit,Вийти,Выйти
+MENU_RUNS,Runs: %d,Забігів: %d,Забегов: %d
+MENU_WINS,Wins: %d,Перемог: %d,Побед: %d
+MENU_BEST_FLOOR,Best: Floor %d,Найкращий: Поверх %d,Лучший: Этаж %d
+MENU_BEST_SCORE,Best Score: %d,Найкращий рахунок: %d,Лучший счет: %d
+MENU_COMPLETIONS,Completions: %d,Закінчено: %d,Завершено: %d
+MENU_STYLE,Style: %s,Плейстайл: %s,Стиль: %s
+STYLE_AGGRO,Aggro,Агресивний,Агрессивный
+STYLE_BALANCED,Balanced,Балансований,Балансированный
+STYLE_TANK,Tank,Танк,Танк
+STYLE_UNKNOWN,Unknown,Невідомий,Неизвестный
+CHAR_SELECT_TITLE,Choose Your Chibiki,Обери свого Чибіка,Выбери своего Чибика
+CHAR_SELECT_SUBTITLE,Each has unique abilities and starting cards,Кожен має унікальні здібності та стартові карти,Каждый имеет уникальные способности и стартовые карты
+CHAR_CHARACTERS,CHARACTERS,ПЕРСОНАЖІ,Персонажи
+CHAR_LOCKED,LOCKED,ЗАМКНЕНО,ЗАКРЫТО
+CHAR_START_RUN,START RUN,РОЗПОЧАТИ ЗАБІГ,НАЧАТЬ ЗАБЕГ
+CHAR_UNLOCK,UNLOCK,РОЗБЛОКУВАТИ,РАЗБЛОКИРОВАТЬ
+CHAR_NOT_ENOUGH_XP,NOT ENOUGH XP,НЕДОСТАТНЬО XP,НЕДОСТАТОЧНО XP
+CHAR_UNLOCK_COST,Unlock Cost: %d XP,Ціна розблокування: %d XP,Цена разблокировки: %d XP
+CHAR_TRIAL_REMAINING,Trial: %d combats left,Пробний режим: %d боїв,Пробный режим: %d боёв
+CHAR_START_TRIAL,START TRIAL,СПРОБУВАТИ,ПОПРОБОВАТЬ
+CHAR_HP,HP: %d,HP: %d,HP: %d
+CHAR_ENERGY,Energy: %d,Енергія: %d,Энергия: %d
+CHAR_MAX_ENERGY,Max Energy: %d,Максимальна енергія: %d,Максимальная энергия: %d
+CHAR_ATTACK,Attack: %d,Атака: %d,Атака: %d
+CHAR_DECK,Deck: %d cards,Колода: %d карт,Колода: %d карт
+SKINS_TITLE,SPRING COLLECTION,ВЕСНЯНА КОЛЕКЦІЯ,ВЕСЕННЯЯ КОЛЛЕКЦИЯ
+SKINS_OWNED,OWNED,ПРИДБАНО,КУПЛЕНО
+SKINS_BUY,BUY,ПРИДБАТИ,КУПИТЬ
+SKINS_NOT_ENOUGH,NOT ENOUGH,НЕДОСТАТНЬО,НЕДОСТАТОЧНО
+SKINS_COST,Cost: %d Bouquets,Ціна: %d Букетиків,Цена: %d букетиков
+SKINS_FOR,for %s,для %s,для %s
+SETTINGS_TITLE,SETTINGS,НАЛАШТУВАННЯ,НАСТРОЙКИ
+SETTINGS_GAMEPLAY,GAMEPLAY,ҐЕЙМПЛЕЙ,ГЕЙМПЛЕЙ
+SETTINGS_AUTO_END_TURN,Auto End Turn,Автозакінчення ходу,Автозавершение хода
+SETTINGS_CONFIRM_CARD,Confirm Card Play,Підтвердити гру картою,Подтверждение хода картой
+SETTINGS_ANIM_SPEED,Animation Speed,Швидкість анімації,Скорость анимации
+SETTINGS_DEBUG_MODE,Debug Mode (Cheats),Режим налагодження (Чити),Режим отладки (Читы)
+SETTINGS_VISUAL,VISUAL EFFECTS,ВІЗУАЛЬНІ ЕФЕКТИ,ВИЗУАЛЬНЫЕ ЭФФЕКТЫ
+SETTINGS_SCREEN_SHAKE,Screen Shake,Тремтіння екрану,Тряска экрана
+SETTINGS_DAMAGE_NUMBERS,Damage Numbers,Числа шкоди,Числа урона
+SETTINGS_PARTICLES,Particles,Частинки,Частицы
+SETTINGS_GLARE,Glare Effects,Сяючий ефект,Сияющие эффекты
+SETTINGS_REDUCED_MOTION,Reduced Motion,Зменшений рух,Уменьшенное движение
+SETTINGS_AUDIO,AUDIO,АУДІО,АУДИО
+SETTINGS_MUSIC,Music Volume,Гучність музики,Громкость музыки
+SETTINGS_SFX,SFX Volume,Гучність звукових ефектів,Громкость звуковых эффектов
+SETTINGS_HAPTIC,Haptic Feedback,Вібрація,Вибрация
+SETTINGS_DISPLAY,DISPLAY,ВІДОБРАЖЕННЯ,ОТОБРАЖЕНИЕ
+SETTINGS_UI_SCALE,UI Scale,Розмір інтерфейсу,Размер интерфейса
+SETTINGS_CARD_SIZE,Card Size,Розмір карт,Размер карт
+SETTINGS_HIGH_CONTRAST,High Contrast Mode,Висококонтрастний режим,Высококонтрастный режим
+SETTINGS_CARD_BORDERS,Show Card Borders,Показувати рамки карт,Показывать рамки карт
+SETTINGS_LANGUAGE,LANGUAGE (BETA),МОВА (БЕТА),ЯЗЫК (БЕТА)
+SETTINGS_DATA,DATA,ДАНІ,ДАННЫЕ
+SETTINGS_RESET_STATS,Reset All Stats,Стерти всі дані,Стереть все данные
+SETTINGS_BACK,BACK,НАЗАД,НАЗАД
+SETTINGS_CONFIRM_RESET,Reset all stats? This cannot be undone!,Дійсно стерти дані? Ця дія невідворотна!,Точно стереть все данные? Эта операция необратима!
+SETTINGS_YES,Yes,Так,Да
+SETTINGS_NO,No,Ні,Нет
+COMBAT_FLOOR,Floor %d,Поверх %d,Этаж %d
+COMBAT_STAGE,Stage %d,Етап %d,Этап %d
+COMBAT_YOUR_TURN,YOUR TURN,ВАШ ХІД,ВАШ ХОД
+COMBAT_ENEMY_TURN,ENEMY TURN,ХІД СУПРОТИВНИКА,ХОД ВРАГА
+COMBAT_END_TURN,End Turn,Завершити хід,Завершить ход
+COMBAT_VICTORY,VICTORY!,ПЕРЕМОГА!,ПОБЕДА!
+COMBAT_DEFEAT,DEFEAT,ПОРАЗКА,ПОРАЖЕНИЕ
+COMBAT_GOLD_EARNED,Gold Earned: %d,Золота зібрано: %d,Золото собрано: %d
+COMBAT_CONTINUE,Continue,Продовжити,Продолжить
+COMBAT_MAIN_MENU,Main Menu,Головне Меню,Главное Меню
+COMBAT_INTENT_ATTACK,Attack for %d,Атака на %d,Атака на %d
+COMBAT_INTENT_DEFEND,Defending,Захист,Защита
+COMBAT_INTENT_BUFF,Buffing,Підсилення,Усиление
+COMBAT_INTENT_UNKNOWN,???,???,???
+SHOP_TITLE,SHOP,КРАМНИЦЯ,МАГАЗИН
+SHOP_CARDS,CARDS FOR SALE,ПРОДАЖ КАРТ,КАРТЫ НА ПРОДАЖУ
+SHOP_UPGRADES,UPGRADES,ПОКРАЩЕННЯ,УЛУЧШЕНИЯ
+SHOP_SERVICES,SERVICES,ПОСЛУГИ,СЛУЖБЫ
+SHOP_VIEW_DECK,View Deck (%d cards),Показати колоду (%d карт),Просмотр колоды (%d карт)
+SHOP_HEAL,Heal %d HP - %d G,Зцілити %d HP - %d З,Исцелить %d HP - %d З
+SHOP_FULL_HEAL,Full Heal - %d G,Повне зцілення - %d З,Полное исцеление - %d З
+SHOP_REMOVE_CARD,Remove Card - %d G,Видалити карту - %d З,Удалить карту - %d З
+SHOP_UPGRADE_CARD,Upgrade a Card - %d G,Покращити карту - %d З,Улучщить карту - %d З
+SHOP_UPGRADE_NONE,Upgrade a Card (No cards),Покращити карту (Немає карт),Улучшить карту (Нет карт)
+SHOP_SOLD,SOLD,ПРОДАНО,ПРОДАНО
+SHOP_CONTINUE,CONTINUE,ПРОДОВЖИТИ,ПРОДОЛЖИТЬ
+SHOP_SELECT_REMOVE,Select Card to Remove (%d G),Оберіть карту для видалення (%d З),Выберите карту для удаления (%d З)
+SHOP_SELECT_UPGRADE,Select Card to Upgrade (%d G),Оберіть карту для покращення (%d З),Выберите карту для улучшения (%d З)
+SHOP_ALREADY_UPGRADED,Already Upgraded,Уже покращено,Уже улучшено
+SHOP_UPGRADE,Upgrade,Покращити,Улучшить
+SHOP_REMOVE,Remove,Видалити,Удалить
+SHOP_CLOSE,Close,Закрити,Закрыть
+SHOP_CANCEL,Cancel,Скасувати,Отмена
+REST_TITLE,Rest Site,Куток відпочинку,Комната отдыха
+REST_HEAL,Rest - Heal %d HP,Відпочити - Зцілити %d HP,Отдохнуть - Исцелить %d HP
+REST_UPGRADE,Upgrade - Enhance a Card,Покращення - Покращити карту,Улучшение - Улучшить карту
+REST_UPGRADE_NONE,Upgrade (No cards),Покращення (Немає карт),Улучшение (Нет карт)
+REST_TRAIN,Train - +1 Max Energy,Тренування - +1 Макс. енергія,Тренировка - +1 Макс. энергия
+EVENT_CONTINUE,Continue,Продовжити,Продолжить
+CARD_ATTACK,ATTACK,АТАКА,АТАКА
+CARD_DEFEND,DEFEND,ЗАХИСТ,ЗАЩИТА
+CARD_SKILL,SKILL,НАВИК,НАВЫК
+CARD_POWER,POWER,СИЛА,СИЛА
+RUN_COMPLETE_TITLE,RUN COMPLETE!,ЗАБІГ ЗАВЕРШЕНО!,ЗАБЕГ ЗАВЕРШЁН!
+RUN_COMPLETE_VICTORY,You defeated the final boss!,Ви перемогли фінального боса!,Вы победили финального босса!
+RUN_COMPLETE_SCORE,Score: %d,Рахунок: %d,Счёт: %d
+RUN_COMPLETE_INFINITE,Continue to Infinite Mode,Продовжити в безконечному режимі,Продолжить в бесконечном режиме
+RUN_COMPLETE_END,End Run,Закінчити забіг,Закончить забег
+CREDITS_TITLE,CREDITS,ПОДЯКИ,БЛАГОДАРНОСТИ
+CREDITS_BACK,Back,Назад,Назад
+COMMON_BACK,Back,Назад,Назад
+COMMON_XP,XP: %d,XP: %d,XP: %d
+COMMON_GOLD,%d G,%d З,%d З
+CHAR_MURZIK_NAME,Murzik,Мурзик,Мурзик
+CHAR_MURZIK_PASSIVE,Start each combat with +5 Block,Розпочинайте кожен бій з +5 Блоком,Начинайте каждый бой с +5 Блоком
+CHAR_DANGERLYOHA_NAME,Dangerlyoha,Денжерльоха,Дэнжерльоха
+CHAR_DANGERLYOHA_PASSIVE,Deal +1 damage with all Attack cards,Завдавайте +1 шкоди з усіма картами Атаки,Наносите +1 урона всеми картами Атаки
+CHAR_MORPHEYA_NAME,Morpheya,Морфія,Морфия
+CHAR_MORPHEYA_PASSIVE,Enemies start weakened (-2 damage),Суперники ослаблені на початку (-2 шкоди),Враги начинают ослабленными (-2 урона)
+CHAR_YUUECHKA_NAME,Yuuechka,Юєчка,Юечка
+CHAR_YUUECHKA_PASSIVE,Every 3rd card played costs 0 energy,Кожна 3-тя зіграна карта коштує 0 енергії,Каждая 3-я сыгранная карта стоит 0 энергии
+CHAR_EVELONE_NAME,Evelone,Евелон,Эвелон
+CHAR_EVELONE_PASSIVE,Earn +2 gold when dealing damage,Отримуйте +2 золота при завданні шкоди,Получайте +2 золота при нанесении урона
+CHAR_BUSTER_NAME,Buster,Бустер,Бустер
+CHAR_BUSTER_PASSIVE,15% chance to deal double damage,15% шанс завдати подвійної шкоди,15% шанс нанести двойной урон
+CHAR_MOKRIVSKYI_NAME,Mokrivskyi,Мокрівський,Мокривский
+CHAR_MOKRIVSKYI_PASSIVE,Heal for 10% of damage dealt,Зцілюйтесь на 10% від завданої шкоди,Регенерируйтесь на 10% от нанесённого урона
+CHAR_CHRISWAVE_NAME,Chriswave,Крісвейв,Крисвэйв
+CHAR_CHRISWAVE_PASSIVE,Start each turn with +2 energy,Розпочинайте кожен хід з +2 енергією,Начинайте каждый ход с +2 энергией
+CHAR_GAECHKA_NAME,Gaechka,Ґаєчка,Гаечка
+CHAR_GAECHKA_PASSIVE,Draw +2 cards when enemy dies,Отримуйте +2 карти коли ворог помирає,Получайте +2 карты когда враг умирает
+CARD_STRIKE_NAME,Strike,Удар,Удар
+CARD_STRIKE_DESC,Deal 7 damage.,Завдає 7 шкоди.,Наносит 7 урона.
+CARD_DEFEND_NAME,Defend,Захист,Защита
+CARD_DEFEND_DESC,Gain 5 block.,Отримай 5 блоку.,Получи 5 блока.
+CARD_QUICK_DRAW_NAME,Quick Draw,Швидкодро,Быстрое Дро
+CARD_QUICK_DRAW_DESC,Draw 2 cards.,Витягнути 2 карти.,Вытянуть 2 карты.
+CARD_WEAKEN_NAME,Weaken,Ослаблення,Ослабление
+CARD_WEAKEN_DESC,Enemy deals -2 damage next turn.,Ворог завдає -2 шкоди наступного ходу.,Враг наносит -2 урона в следующем ходу.
+CARD_RAGE_NAME,Rage,Лють,Ярость
+CARD_RAGE_DESC,Deal 4 damage. Draw 1 card.,Завдати 4 шкоди. Витягнути 1 карту.,Нанести 4 урона. Вытянуть 1 карту.
+CARD_IRON_WALL_NAME,Iron Wall,Залізне пузо,Железное пузо
+CARD_IRON_WALL_DESC,Gain 10 block.,Отримай 10 блоку.,Получи 10 блока.
+CARD_OVERCHARGE_NAME,Overcharge,Перезарядка,Перезарядка
+CARD_OVERCHARGE_DESC,Gain 2 Energy. Draw 1 card.,Отримати 2 енергії. Витягнути 1 карту.,Получить 2 энергии. Вытянуть 1 карту.
+CARD_FORTIFY_NAME,Fortify,Укріплення,Укрепление
+CARD_FORTIFY_DESC,Gain 10 Block. Gain 5 Block next turn.,Отримати 10 блоку. Отримати 5 блоку наступного ходу.,Получить 10 блока. Получить 5 блока в следующем ходу.
+CARD_RECKLESS_STRIKE_NAME,Reckless Strike,Безрозсудний удар,Безрассудный удар
+CARD_RECKLESS_STRIKE_DESC,Deal 12 damage. Take 4 damage.,Завдати 12 шкоди. Отримати 4 шкоди.,Нанести 12 урона. Получить 4 урона.
+CARD_MIND_CRUSH_NAME,Mind Crush,Психічний тиск,Ментальный удар
+CARD_MIND_CRUSH_DESC,Apply 3 Weaken. Deal 5 damage.,Накласти 3 ослаблення. Завдати 5 шкоди.,Наложить 3 ослабления. Нанести 5 урона.
+CARD_FLURRY_NAME,Flurry,Шквал,Шквал
+CARD_FLURRY_DESC,Deal 3 damage 3 times.,Завдати 3 шкоди 3 рази.,Нанести 3 урона 3 раза.
+CARD_GOLDEN_OPPORTUNITY_NAME,Golden Opportunity,Золота можливість,Золотая возможность
+CARD_GOLDEN_OPPORTUNITY_DESC,Deal 8 damage. Gain 8 Gold.,Завдати 8 шкоди. Отримати 8 золота.,Нанести 8 урона. Получить 8 золота.
+CARD_ALL_IN_NAME,All In,Ва-банк,Ва-банк
+CARD_ALL_IN_DESC,Deal 18 damage.,Завдати 18 шкоди.,Нанести 18 урона.
+CARD_DRAIN_LIFE_NAME,Drain Life,Висмоктування життя,Высасывание жизни
+CARD_DRAIN_LIFE_DESC,Deal 14 damage.,Завдати 14 шкоди.,Нанести 14 урона.
+CARD_PRECISE_STRIKE_NAME,Precise Strike,Точний удар,Точный удар
+CARD_PRECISE_STRIKE_DESC,Deal 7 damage. Draw 1 card if this kills.,Завдати 7 шкоди. Витягнути 1 карту якщо це вбиває.,Нанести 7 урона. Вытянуть 1 карту если это убивает.
+SKIN_SPRING_CHRISWAVE_NAME,Spring Chriswave,Весняна Крісвейв,Весенняя Крисвэйв
+SKIN_SPRING_CHRISWAVE_DESC,Chriswave in a beautiful spring outfit with cherry blossoms.,Крістіна у весняному вбранні серед квітучих сакур.,Кристина в весеннем наряде среди цветущих сакур.
+SKIN_SPRING_GAECHKA_NAME,Spring Gaechka,Весняна Ґаєчка,Весенняя Гаечка
+SKIN_SPRING_GAECHKA_DESC,Gaechka enjoying the warm spring breeze.,Даша насолоджується теплим весняним бризом.,Даша наслаждается тёплым весенним ветром.
+SKIN_SPRING_DANGERLYOHA_NAME,Spring Dangerlyoha,Весняний Денжерльоха,Весенний Дэнжерльоха
+SKIN_SPRING_DANGERLYOHA_DESC,Dangerlyoha surrounded by blooming flowers.,Льоха серед квітучих квітів.,Льоха окружён цветущими цветами.
+SKIN_DEFAULT_NAME,Default,Звичайний,По умолчанию
+SKIN_GOTH_YUUECHKA_NAME,Goth Yuuechka,Готична Юєчка,Готичная Юечка
+SKIN_GOTH_YUUECHKA_DESC,Yuuechka embracing the dark aesthetic with gothic elegance.,Юєчка у готичному елегантному стилі.,Юечка в готичном элегантном стиле.
+SKIN_GOTH_MORPHEYA_NAME,Goth Morpheya,Готична Морфія,Готичная Морфия
+SKIN_GOTH_MORPHEYA_DESC,Morpheya in a mysterious gothic attire.,Морфія у таємничому готичному вбранні.,Морфия в таинственном готичном наряде.
+COMBAT_DRAW,Draw: %d,Колода: %d,Колода: %d
+COMBAT_DISCARD,Discard: %d,Скид: %d,Сброс: %d
+COMBAT_OUT_OF_CARDS,OUT OF CARDS!,КАРТИ ЗАКІНЧИЛИСЬ!,КАРТЫ КОНЧИЛИСЬ!
+COMBAT_SCORE,SCORE,РАХУНОК,СЧЁТ
+COMBAT_QUICK_PLAY,Quick Play,Швидка гра,Быстрая игра
+COMBAT_TRY_AGAIN,Try Again,Спробувати ще,Попробовать снова
+COMBAT_INFINITE,INFINITE,БЕЗКІНЕЧНИЙ,БЕСКОНЕЧНЫЙ
+COMBAT_ELITE_BATTLE,ELITE BATTLE!,ЕЛІТНИЙ БІЙ!,ЭЛИТНЫЙ БОЙ!
+COMBAT_BOSS_BATTLE,BOSS BATTLE!,БІЙ З БОСОМ!,БОЙ С БОССОМ!
+RELIC_TAP_CLOSE,Tap anywhere to close,Натисніть будь-де щоб закрити,Нажмите в любом месте чтобы закрыть
+RUN_INFINITE_MODE,INFINITE MODE,БЕЗКІНЕЧНИЙ РЕЖИМ,БЕСКОНЕЧНЫЙ РЕЖИМ
+RUN_END_VICTORY,End Run (Victory),Завершити забіг (Перемога),Завершить забег (Победа)
+STATS_ENEMIES_DEFEATED,Enemies: %d,Переможено: %d,Побеждено: %d
+STATS_PERFECT_COMBATS,Perfect Combats: %d,Ідеальних боїв: %d,Идеальных боёв: %d
+STATS_CARDS_PLAYED,Cards Played: %d,Зіграно карт: %d,Сыграно карт: %d
+COMBO_COUNTER,COMBO x%d,КОМБО x%d,КОМБО x%d
+DAMAGE_BLOCKED,BLOCKED!,ЗАБЛОКОВАНО!,ЗАБЛОКИРОВАНО!
+CRITICAL_HIT,CRITICAL!,КРИТИЧНИЙ!,КРИТИЧЕСКИЙ!
+HEAL_TEXT,+%d HP,+%d HP,+%d HP
+GOLD_GAINED,+%d G,+%d З,+%d З
+ENERGY_GAINED,+%d ENERGY,+%d ЕНЕРГІЇ,+%d ЭНЕРГИИ
+CARD_DRAWN,+%d CARD,+%d КАРТА,+%d КАРТА
+FREE_CARD,FREE CARD!,БЕЗКОШТОВНА!,БЕСПЛАТНАЯ!
+WEAKENED,WEAKENED!,ОСЛАБЛЕНО!,ОСЛАБЛЕНО!
+FORTIFIED,FORTIFIED!,УКРІПЛЕНО!,УКРЕПЛЕНО!
+PAUSE_TITLE,PAUSED,ПАУЗА,ПАУЗА
+PAUSE_RESUME,Resume,Продовжити,Продолжить
+PAUSE_SETTINGS,Settings,Налаштування,Настройки
+PAUSE_MAIN_MENU,Return to Main Menu,Повернутися в меню,Вернуться в меню
+PAUSE_QUIT,Quit Game,Вийти з гри,Выйти из игры
+MENU_INFO,Info,Інфо,Инфо
+INFO_TITLE,GAME INFO,ІНФОРМАЦІЯ,ИНФОРМАЦИЯ
+INFO_ENEMIES,ENEMIES,ВОРОГИ,ВРАГИ
+INFO_CARDS,CARDS,КАРТИ,КАРТЫ
+INFO_BACK,Back,Назад,Назад

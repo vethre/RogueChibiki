@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://ysbw5184i56c" path="res://scripts/cards/card_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+card_name = "Flurry"
+energy_cost = 1
+card_type = 0
+description = "Deal 3 damage 3 times."
+rarity = 1
+damage = 3
+block = 0
+draw_cards = 0
+special_effect = "multi_hit_3"
+upgrade_damage = 1
+upgrade_block = 0
+upgrade_draw = 0
+upgrade_cost_reduction = 0

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ConsumableData" load_steps=2 format=3 uid="uid://consumable_gold"]
+
+[ext_resource type="Script" path="res://scripts/consumables/consumable_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+consumable_name = "Lucky Coin"
+description = "Gain 30 gold"
+effect_type = 5
+effect_value = 30

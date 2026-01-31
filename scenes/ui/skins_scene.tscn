@@ -1,0 +1,163 @@
+[gd_scene load_steps=5 format=3 uid="uid://skins001"]
+
+[ext_resource type="Script" uid="uid://bc6tlo4khmo5t" path="res://scripts/ui/skins_scene.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://b24diams0cx0c" path="res://assets/bouquet.png" id="2_bouquet"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_left_panel"]
+bg_color = Color(0.06, 0.04, 0.1, 0.95)
+border_width_right = 2
+border_color = Color(0.9, 0.6, 0.75, 0.6)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_right_panel"]
+bg_color = Color(0.08, 0.05, 0.12, 0.9)
+
+[node name="SkinsScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.06, 0.04, 0.1, 1)
+
+[node name="MainHBox" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="LeftPanel" type="PanelContainer" parent="MainHBox"]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_left_panel")
+
+[node name="LeftMargin" type="MarginContainer" parent="MainHBox/LeftPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="LeftVBox" type="VBoxContainer" parent="MainHBox/LeftPanel/LeftMargin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="BackButton" type="Button" parent="MainHBox/LeftPanel/LeftMargin/LeftVBox"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "< Back"
+
+[node name="TitleLabel" type="Label" parent="MainHBox/LeftPanel/LeftMargin/LeftVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.75, 0.85, 1)
+theme_override_font_sizes/font_size = 20
+text = "SPRING COLLECTION"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MainHBox/LeftPanel/LeftMargin/LeftVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="SkinsGrid" type="GridContainer" parent="MainHBox/LeftPanel/LeftMargin/LeftVBox/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="BouquetContainer" type="HBoxContainer" parent="MainHBox/LeftPanel/LeftMargin/LeftVBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="BouquetIcon" type="TextureRect" parent="MainHBox/LeftPanel/LeftMargin/LeftVBox/BouquetContainer"]
+custom_minimum_size = Vector2(28, 28)
+layout_mode = 2
+texture = ExtResource("2_bouquet")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BouquetLabel" type="Label" parent="MainHBox/LeftPanel/LeftMargin/LeftVBox/BouquetContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.75, 0.85, 1)
+theme_override_font_sizes/font_size = 22
+text = "0"
+
+[node name="RightPanel" type="PanelContainer" parent="MainHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_right_panel")
+
+[node name="RightMargin" type="MarginContainer" parent="MainHBox/RightPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 20
+
+[node name="PreviewVBox" type="VBoxContainer" parent="MainHBox/RightPanel/RightMargin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="SkinName" type="Label" parent="MainHBox/RightPanel/RightMargin/PreviewVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.9, 1)
+theme_override_font_sizes/font_size = 32
+text = "Select a Skin"
+horizontal_alignment = 1
+
+[node name="CharacterLabel" type="Label" parent="MainHBox/RightPanel/RightMargin/PreviewVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.7, 0.9, 1)
+theme_override_font_sizes/font_size = 18
+horizontal_alignment = 1
+
+[node name="SpriteContainer" type="CenterContainer" parent="MainHBox/RightPanel/RightMargin/PreviewVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SkinSprite" type="TextureRect" parent="MainHBox/RightPanel/RightMargin/PreviewVBox/SpriteContainer"]
+custom_minimum_size = Vector2(400, 400)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DescriptionLabel" type="Label" parent="MainHBox/RightPanel/RightMargin/PreviewVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.65, 0.8, 1)
+theme_override_font_sizes/font_size = 16
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Spacer" type="Control" parent="MainHBox/RightPanel/RightMargin/PreviewVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CostLabel" type="Label" parent="MainHBox/RightPanel/RightMargin/PreviewVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.85, 1)
+theme_override_font_sizes/font_size = 20
+horizontal_alignment = 1
+
+[node name="BuyButton" type="Button" parent="MainHBox/RightPanel/RightMargin/PreviewVBox"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "BUY"

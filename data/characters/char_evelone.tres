@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=4 format=3 uid="uid://b358yjl7jfjao"]
+
+[ext_resource type="Script" uid="uid://bk4vujbglf4lp" path="res://scripts/characters/character_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://yij0feo7nldb" path="res://assets/evelone.png" id="2_portrait"]
+[ext_resource type="Resource" path="res://data/card_golden_opportunity.tres" id="3_special"]
+
+[resource]
+script = ExtResource("1_script")
+character_name = "Evelone"
+portrait = ExtResource("2_portrait")
+passive_type = 4
+passive_value = 2
+passive_description = "Earn +2 gold when dealing damage"
+starting_hp = 48
+strike_count = 6
+special_cards = Array[Resource]([ExtResource("3_special")])
+is_unlocked = false
+unlock_cost = 4000

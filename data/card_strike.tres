@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="CardData" load_steps=2 format=3 uid="uid://ddcsnwuovov7h"]
+
+[ext_resource type="Script" uid="uid://ysbw5184i56c" path="res://scripts/cards/card_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+card_name = "Strike"
+description = "Deal 7 damage."
+damage = 7
+upgrade_draw = 0

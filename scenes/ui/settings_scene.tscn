@@ -1,0 +1,471 @@
+[gd_scene load_steps=4 format=3 uid="uid://settings001"]
+
+[ext_resource type="Script" path="res://scripts/ui/settings_scene.gd" id="1_script"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_section"]
+bg_color = Color(0.08, 0.06, 0.14, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.45, 0.35, 0.65, 0.7)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn"]
+bg_color = Color(0.15, 0.1, 0.25, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.6, 0.5, 0.9, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[node name="SettingsScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.04, 0.03, 0.07, 1)
+
+[node name="SafeArea" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="MainVBox" type="VBoxContainer" parent="SafeArea"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="SafeArea/MainVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "SETTINGS"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="SafeArea/MainVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
+
+[node name="Content" type="VBoxContainer" parent="SafeArea/MainVBox/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="GameplaySection" type="PanelContainer" parent="SafeArea/MainVBox/ScrollContainer/Content"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_section")
+
+[node name="GameplayMargin" type="MarginContainer" parent="SafeArea/MainVBox/ScrollContainer/Content/GameplaySection"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="GameplayContent" type="VBoxContainer" parent="SafeArea/MainVBox/ScrollContainer/Content/GameplaySection/GameplayMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="GameplayLabel" type="Label" parent="SafeArea/MainVBox/ScrollContainer/Content/GameplaySection/GameplayMargin/GameplayContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.5, 1)
+theme_override_font_sizes/font_size = 14
+text = "GAMEPLAY"
+
+[node name="AutoEndTurnCheck" type="CheckBox" parent="SafeArea/MainVBox/ScrollContainer/Content/GameplaySection/GameplayMargin/GameplayContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+button_pressed = true
+text = "Auto End Turn"
+
+[node name="ConfirmCardCheck" type="CheckBox" parent="SafeArea/MainVBox/ScrollContainer/Content/GameplaySection/GameplayMargin/GameplayContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Confirm Card Play"
+
+[node name="DebugModeCheck" type="CheckBox" parent="SafeArea/MainVBox/ScrollContainer/Content/GameplaySection/GameplayMargin/GameplayContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.7, 0.3, 1)
+theme_override_font_sizes/font_size = 14
+text = "Debug Mode (Cheats)"
+
+[node name="AnimSpeedRow" type="HBoxContainer" parent="SafeArea/MainVBox/ScrollContainer/Content/GameplaySection/GameplayMargin/GameplayContent"]
+layout_mode = 2
+
+[node name="AnimSpeedLabel" type="Label" parent="SafeArea/MainVBox/ScrollContainer/Content/GameplaySection/GameplayMargin/GameplayContent/AnimSpeedRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+text = "Animation Speed"
+
+[node name="AnimSpeedSlider" type="HSlider" parent="SafeArea/MainVBox/ScrollContainer/Content/GameplaySection/GameplayMargin/GameplayContent/AnimSpeedRow"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+min_value = 0.5
+max_value = 2.0
+step = 0.1
+value = 1.0
+
+[node name="AnimSpeedValue" type="Label" parent="SafeArea/MainVBox/ScrollContainer/Content/GameplaySection/GameplayMargin/GameplayContent/AnimSpeedRow"]
+custom_minimum_size = Vector2(45, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "1.0x"
+horizontal_alignment = 2
+
+[node name="VisualSection" type="PanelContainer" parent="SafeArea/MainVBox/ScrollContainer/Content"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_section")
+
+[node name="VisualMargin" type="MarginContainer" parent="SafeArea/MainVBox/ScrollContainer/Content/VisualSection"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="VisualContent" type="VBoxContainer" parent="SafeArea/MainVBox/ScrollContainer/Content/VisualSection/VisualMargin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="VisualLabel" type="Label" parent="SafeArea/MainVBox/ScrollContainer/Content/VisualSection/VisualMargin/VisualContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "VISUAL EFFECTS"
+
+[node name="ScreenShakeCheck" type="CheckBox" parent="SafeArea/MainVBox/ScrollContainer/Content/VisualSection/VisualMargin/VisualContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+button_pressed = true
+text = "Screen Shake"
+
+[node name="DamageNumbersCheck" type="CheckBox" parent="SafeArea/MainVBox/ScrollContainer/Content/VisualSection/VisualMargin/VisualContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+button_pressed = true
+text = "Damage Numbers"
+
+[node name="ParticlesCheck" type="CheckBox" parent="SafeArea/MainVBox/ScrollContainer/Content/VisualSection/VisualMargin/VisualContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+button_pressed = true
+text = "Particles"
+
+[node name="GlareCheck" type="CheckBox" parent="SafeArea/MainVBox/ScrollContainer/Content/VisualSection/VisualMargin/VisualContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+button_pressed = true
+text = "Glare Effects"
+
+[node name="ReducedMotionCheck" type="CheckBox" parent="SafeArea/MainVBox/ScrollContainer/Content/VisualSection/VisualMargin/VisualContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Reduced Motion"
+
+[node name="AudioSection" type="PanelContainer" parent="SafeArea/MainVBox/ScrollContainer/Content"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_section")
+
+[node name="AudioMargin" type="MarginContainer" parent="SafeArea/MainVBox/ScrollContainer/Content/AudioSection"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="AudioContent" type="VBoxContainer" parent="SafeArea/MainVBox/ScrollContainer/Content/AudioSection/AudioMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="AudioLabel" type="Label" parent="SafeArea/MainVBox/ScrollContainer/Content/AudioSection/AudioMargin/AudioContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 1, 0.7, 1)
+theme_override_font_sizes/font_size = 14
+text = "AUDIO"
+
+[node name="MusicRow" type="HBoxContainer" parent="SafeArea/MainVBox/ScrollContainer/Content/AudioSection/AudioMargin/AudioContent"]
+layout_mode = 2
+
+[node name="MusicLabel" type="Label" parent="SafeArea/MainVBox/ScrollContainer/Content/AudioSection/AudioMargin/AudioContent/MusicRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+text = "Music Volume"
+
+[node name="MusicSlider" type="HSlider" parent="SafeArea/MainVBox/ScrollContainer/Content/AudioSection/AudioMargin/AudioContent/MusicRow"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+value = 0.8
+
+[node name="MusicValue" type="Label" parent="SafeArea/MainVBox/ScrollContainer/Content/AudioSection/AudioMargin/AudioContent/MusicRow"]
+custom_minimum_size = Vector2(45, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "80%"
+horizontal_alignment = 2
+
+[node name="SFXRow" type="HBoxContainer" parent="SafeArea/MainVBox/ScrollContainer/Content/AudioSection/AudioMargin/AudioContent"]
+layout_mode = 2
+
+[node name="SFXLabel" type="Label" parent="SafeArea/MainVBox/ScrollContainer/Content/AudioSection/AudioMargin/AudioContent/SFXRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+text = "SFX Volume"
+
+[node name="SFXSlider" type="HSlider" parent="SafeArea/MainVBox/ScrollContainer/Content/AudioSection/AudioMargin/AudioContent/SFXRow"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="SFXValue" type="Label" parent="SafeArea/MainVBox/ScrollContainer/Content/AudioSection/AudioMargin/AudioContent/SFXRow"]
+custom_minimum_size = Vector2(45, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "100%"
+horizontal_alignment = 2
+
+[node name="HapticCheck" type="CheckBox" parent="SafeArea/MainVBox/ScrollContainer/Content/AudioSection/AudioMargin/AudioContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+button_pressed = true
+text = "Haptic Feedback"
+
+[node name="DisplaySection" type="PanelContainer" parent="SafeArea/MainVBox/ScrollContainer/Content"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_section")
+
+[node name="DisplayMargin" type="MarginContainer" parent="SafeArea/MainVBox/ScrollContainer/Content/DisplaySection"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="DisplayContent" type="VBoxContainer" parent="SafeArea/MainVBox/ScrollContainer/Content/DisplaySection/DisplayMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="DisplayLabel" type="Label" parent="SafeArea/MainVBox/ScrollContainer/Content/DisplaySection/DisplayMargin/DisplayContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.7, 0.9, 1)
+theme_override_font_sizes/font_size = 14
+text = "DISPLAY"
+
+[node name="UIScaleRow" type="HBoxContainer" parent="SafeArea/MainVBox/ScrollContainer/Content/DisplaySection/DisplayMargin/DisplayContent"]
+layout_mode = 2
+
+[node name="UIScaleLabel" type="Label" parent="SafeArea/MainVBox/ScrollContainer/Content/DisplaySection/DisplayMargin/DisplayContent/UIScaleRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+text = "UI Scale"
+
+[node name="UIScaleSlider" type="HSlider" parent="SafeArea/MainVBox/ScrollContainer/Content/DisplaySection/DisplayMargin/DisplayContent/UIScaleRow"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+min_value = 0.8
+max_value = 1.5
+step = 0.05
+value = 1.0
+
+[node name="UIScaleValue" type="Label" parent="SafeArea/MainVBox/ScrollContainer/Content/DisplaySection/DisplayMargin/DisplayContent/UIScaleRow"]
+custom_minimum_size = Vector2(45, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "100%"
+horizontal_alignment = 2
+
+[node name="CardSizeRow" type="HBoxContainer" parent="SafeArea/MainVBox/ScrollContainer/Content/DisplaySection/DisplayMargin/DisplayContent"]
+layout_mode = 2
+
+[node name="CardSizeLabel" type="Label" parent="SafeArea/MainVBox/ScrollContainer/Content/DisplaySection/DisplayMargin/DisplayContent/CardSizeRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+text = "Card Size"
+
+[node name="CardSizeSlider" type="HSlider" parent="SafeArea/MainVBox/ScrollContainer/Content/DisplaySection/DisplayMargin/DisplayContent/CardSizeRow"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+min_value = 0.8
+max_value = 1.2
+step = 0.05
+value = 1.0
+
+[node name="CardSizeValue" type="Label" parent="SafeArea/MainVBox/ScrollContainer/Content/DisplaySection/DisplayMargin/DisplayContent/CardSizeRow"]
+custom_minimum_size = Vector2(45, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "100%"
+horizontal_alignment = 2
+
+[node name="HighContrastCheck" type="CheckBox" parent="SafeArea/MainVBox/ScrollContainer/Content/DisplaySection/DisplayMargin/DisplayContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "High Contrast Mode"
+
+[node name="CardBordersCheck" type="CheckBox" parent="SafeArea/MainVBox/ScrollContainer/Content/DisplaySection/DisplayMargin/DisplayContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+button_pressed = true
+text = "Show Card Borders"
+
+[node name="LanguageSection" type="PanelContainer" parent="SafeArea/MainVBox/ScrollContainer/Content"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_section")
+
+[node name="LanguageMargin" type="MarginContainer" parent="SafeArea/MainVBox/ScrollContainer/Content/LanguageSection"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="LanguageContent" type="VBoxContainer" parent="SafeArea/MainVBox/ScrollContainer/Content/LanguageSection/LanguageMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LanguageLabel" type="Label" parent="SafeArea/MainVBox/ScrollContainer/Content/LanguageSection/LanguageMargin/LanguageContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.8, 0.5, 1)
+theme_override_font_sizes/font_size = 14
+text = "LANGUAGE"
+
+[node name="LanguageRow" type="HBoxContainer" parent="SafeArea/MainVBox/ScrollContainer/Content/LanguageSection/LanguageMargin/LanguageContent"]
+layout_mode = 2
+
+[node name="LanguageNameLabel" type="Label" parent="SafeArea/MainVBox/ScrollContainer/Content/LanguageSection/LanguageMargin/LanguageContent/LanguageRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+text = "Language"
+
+[node name="LanguageOption" type="OptionButton" parent="SafeArea/MainVBox/ScrollContainer/Content/LanguageSection/LanguageMargin/LanguageContent/LanguageRow"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+selected = 0
+
+[node name="DataSection" type="PanelContainer" parent="SafeArea/MainVBox/ScrollContainer/Content"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_section")
+
+[node name="DataMargin" type="MarginContainer" parent="SafeArea/MainVBox/ScrollContainer/Content/DataSection"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="DataContent" type="VBoxContainer" parent="SafeArea/MainVBox/ScrollContainer/Content/DataSection/DataMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="DataLabel" type="Label" parent="SafeArea/MainVBox/ScrollContainer/Content/DataSection/DataMargin/DataContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.5, 0.5, 1)
+theme_override_font_sizes/font_size = 14
+text = "DATA"
+
+[node name="ResetStatsBtn" type="Button" parent="SafeArea/MainVBox/ScrollContainer/Content/DataSection/DataMargin/DataContent"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.6, 0.6, 1)
+theme_override_font_sizes/font_size = 14
+text = "Reset All Stats"
+
+[node name="BackButton" type="Button" parent="SafeArea/MainVBox"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn")
+text = "BACK"
+
+[node name="ConfirmPanel" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -140.0
+offset_top = -80.0
+offset_right = 140.0
+offset_bottom = 80.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="ConfirmPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+
+[node name="ConfirmLabel" type="Label" parent="ConfirmPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Reset all stats?
+This cannot be undone!"
+horizontal_alignment = 1
+
+[node name="Buttons" type="HBoxContainer" parent="ConfirmPanel/VBox"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 20
+
+[node name="YesButton" type="Button" parent="ConfirmPanel/VBox/Buttons"]
+custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.5, 0.5, 1)
+text = "Yes"
+
+[node name="NoButton" type="Button" parent="ConfirmPanel/VBox/Buttons"]
+custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
+text = "No"

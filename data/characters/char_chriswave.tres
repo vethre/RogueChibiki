@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=4 format=3 uid="uid://dawo35171l6pv"]
+
+[ext_resource type="Script" uid="uid://bk4vujbglf4lp" path="res://scripts/characters/character_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bahq36r0y6d8d" path="res://assets/chriswave.png" id="2_portrait"]
+[ext_resource type="Resource" path="res://data/card_overcharge.tres" id="3_special"]
+
+[resource]
+script = ExtResource("1_script")
+character_name = "Chriswave"
+portrait = ExtResource("2_portrait")
+passive_type = 7
+passive_value = 2
+passive_description = "Start each turn with +2 bonus energy"
+starting_hp = 45
+special_cards = Array[Resource]([ExtResource("3_special")])
+is_unlocked = false
+unlock_cost = 35000

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RelicData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/relics/relic_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+relic_name = "Whetstone"
+description = "+2 damage per attack card"
+effect_type = 0
+effect_value = 2
+rarity = 1
+break_chance = 0.0
+is_fragile = false

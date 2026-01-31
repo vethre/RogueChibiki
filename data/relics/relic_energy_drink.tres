@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RelicData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/relics/relic_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+relic_name = "Energy Drink"
+description = "+1 energy on first turn only"
+effect_type = 5
+effect_value = 1
+rarity = 1
+break_chance = 0.0
+is_fragile = false

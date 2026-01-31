@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RelicData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/relics/relic_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+relic_name = "Ancient Tome"
+description = "+1 card drawn each turn (Fragile)"
+effect_type = 6
+effect_value = 1
+rarity = 2
+break_chance = 4.0
+is_fragile = true

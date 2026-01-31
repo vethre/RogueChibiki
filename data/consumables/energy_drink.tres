@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ConsumableData" load_steps=2 format=3 uid="uid://consumable_energy"]
+
+[ext_resource type="Script" path="res://scripts/consumables/consumable_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+consumable_name = "Energy Drink"
+description = "Gain 2 energy this turn"
+effect_type = 1
+effect_value = 2
