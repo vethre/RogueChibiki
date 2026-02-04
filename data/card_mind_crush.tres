@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CardData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="CardData" load_steps=2 format=3 uid="uid://cra7alrsxi816"]
 
 [ext_resource type="Script" uid="uid://ysbw5184i56c" path="res://scripts/cards/card_data.gd" id="1_script"]
 
@@ -10,10 +10,6 @@ card_type = 2
 description = "Apply 3 Weaken. Deal 5 damage."
 rarity = 1
 damage = 5
-block = 0
-draw_cards = 0
 special_effect = "weaken_3_attack"
-upgrade_damage = 3
 upgrade_block = 0
 upgrade_draw = 0
-upgrade_cost_reduction = 0

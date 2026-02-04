@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=5 format=3 uid="uid://caykf42igef30"]
+
+[ext_resource type="Script" uid="uid://bk4vujbglf4lp" path="res://scripts/characters/character_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bq8gedh1pmaid" path="res://assets/byowl.PNG" id="2_portrait"]
+[ext_resource type="Resource" path="res://data/card_fury.tres" id="3_special"]
+[ext_resource type="Resource" uid="uid://bw5doc8n4omea" path="res://data/card_rage.tres" id="4_rage"]
+
+[resource]
+script = ExtResource("1_script")
+character_name = "ByOwl"
+portrait = ExtResource("2_portrait")
+passive_type = 11
+passive_value = 2
+passive_description = "+2 damage for each Rage/Fury card in discard pile"
+starting_hp = 42
+starting_energy = 2
+strike_count = 3
+special_cards = Array[Resource]([ExtResource("3_special"), ExtResource("4_rage"), ExtResource("4_rage")])
+is_unlocked = false
+unlock_cost = 15000

@@ -27,6 +27,11 @@ enum BossEffect {
 	PLAYER_BURN,       # Player takes 2 damage per turn
 	NO_BLOCK_START,    # Can't gain block first turn
 	SHUFFLED_HAND,     # Cards cost random energy (1-3)
+	# New boss effects
+	CARD_EXHAUST,      # Cards are exhausted (removed) when played
+	FRAIL,             # Block decays completely at turn start
+	DOUBLE_DAMAGE,     # Both sides deal +50% damage
+	SILENCE,           # Skill cards cost +1 energy
 }
 
 const BOSS_EFFECT_NAMES = {
@@ -39,6 +44,11 @@ const BOSS_EFFECT_NAMES = {
 	BossEffect.PLAYER_BURN: "Burning Aura",
 	BossEffect.NO_BLOCK_START: "Ambush",
 	BossEffect.SHUFFLED_HAND: "Chaos",
+	# New effects
+	BossEffect.CARD_EXHAUST: "Exhaustion",
+	BossEffect.FRAIL: "Frailty",
+	BossEffect.DOUBLE_DAMAGE: "Glass Cannon",
+	BossEffect.SILENCE: "Silencer",
 }
 
 const BOSS_EFFECT_DESCRIPTIONS = {
@@ -51,6 +61,11 @@ const BOSS_EFFECT_DESCRIPTIONS = {
 	BossEffect.PLAYER_BURN: "Take 2 damage each turn",
 	BossEffect.NO_BLOCK_START: "Can't block first turn",
 	BossEffect.SHUFFLED_HAND: "Card costs randomized (1-3)",
+	# New effects
+	BossEffect.CARD_EXHAUST: "Played cards are exhausted",
+	BossEffect.FRAIL: "Block doesn't carry over",
+	BossEffect.DOUBLE_DAMAGE: "All damage increased by 50%",
+	BossEffect.SILENCE: "Skill cards cost +1 energy",
 }
 
 var current_boss_effect: BossEffect = BossEffect.NONE
@@ -110,8 +125,8 @@ var run_deck: Array[CardData] = []
 var run_relics: Array[RelicData] = []
 var run_bouquets: int = 0
 
-# Consumables system (2 slots)
-const MAX_CONSUMABLE_SLOTS: int = 2
+# Consumables system (3 slots for more flexibility)
+const MAX_CONSUMABLE_SLOTS: int = 3
 var run_consumables: Array = []  # Array of ConsumableData or null
 
 # All available relics (loaded on ready)
@@ -211,7 +226,7 @@ func start_new_run(character: CharacterData, custom_seed: String = "") -> void:
 	run_deck = GameManager.get_starting_deck(character)
 	run_relics = []
 	run_bouquets = 0
-	run_consumables = [null, null]  # Initialize 2 empty slots
+	run_consumables = [null, null, null]  # Initialize 3 empty slots
 
 	# Reset upgrades
 	bonus_energy = 0
@@ -278,11 +293,10 @@ func _determine_next_encounter() -> EncounterType:
 			_select_boss_effect()  # Choose a random boss effect
 			return EncounterType.BOSS
 
-	# Event chance disabled - keep clean 3-enemy-shop pattern
-	# Events can still appear from other sources (shops, relics, etc.)
-	# var event_chance = 0.15
-	# if current_floor > 1 and combats_in_stage > 0 and seeded_randf() < event_chance:
-	#	return EncounterType.EVENT
+	# Random event chance (15%) - can appear after 1st combat of each stage
+	var event_chance = 0.15
+	if current_stage > 1 and combats_in_stage > 0 and seeded_randf() < event_chance:
+		return EncounterType.EVENT
 
 	# Elite chance increases with stage (reduced early game)
 	# No elites in stage 1, then 5% + 3% per stage after that
@@ -324,6 +338,11 @@ func _select_boss_effect() -> void:
 		BossEffect.PLAYER_BURN,
 		BossEffect.NO_BLOCK_START,
 		BossEffect.SHUFFLED_HAND,
+		# New effects
+		BossEffect.CARD_EXHAUST,
+		BossEffect.FRAIL,
+		BossEffect.DOUBLE_DAMAGE,
+		BossEffect.SILENCE,
 	]
 
 	# First boss (stage 5) has a 50% chance of no effect to ease players in
@@ -418,14 +437,16 @@ func _add_encounter_score(encounter: EncounterType) -> void:
 	run_score += int((base_score + efficiency_bonus + perfect_bonus) * stage_multiplier)
 
 func _go_to_next_encounter() -> void:
-	current_floor += 1
-	floor_changed.emit(current_floor)
+	# Determine next encounter type dynamically FIRST
+	current_encounter = _determine_next_encounter()
+
+	# Only increment floor for actual encounters, not for shop visits (Task #10 fix)
+	if current_encounter != EncounterType.SHOP:
+		current_floor += 1
+		floor_changed.emit(current_floor)
 
 	# GRADUAL difficulty scaling (linear per stage, not exponential per floor)
 	difficulty_multiplier = 1.0 + (current_stage - 1) * BASE_DIFFICULTY_GROWTH
-
-	# Determine next encounter type dynamically
-	current_encounter = _determine_next_encounter()
 
 	match current_encounter:
 		EncounterType.COMBAT, EncounterType.ELITE, EncounterType.BOSS:

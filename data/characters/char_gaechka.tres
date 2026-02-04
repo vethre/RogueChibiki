@@ -2,18 +2,18 @@
 
 [ext_resource type="Script" uid="uid://bk4vujbglf4lp" path="res://scripts/characters/character_data.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://dojb648xe83qx" path="res://assets/gaechka.png" id="2_portrait"]
-[ext_resource type="Resource" path="res://data/card_precise_strike.tres" id="3_special"]
+[ext_resource type="Resource" uid="uid://dfxfjeyqqr07h" path="res://data/card_precise_strike.tres" id="3_special"]
 
 [resource]
 script = ExtResource("1_script")
 character_name = "Gaechka"
 portrait = ExtResource("2_portrait")
 passive_type = 8
-passive_value = 2
-passive_description = "Draw +2 cards when an enemy is defeated"
-starting_hp = 44
+passive_value = 1
+passive_description = "All cards cost 1 less energy (min 0)"
+starting_hp = 48
 strike_count = 4
 defend_count = 4
 special_cards = Array[Resource]([ExtResource("3_special")])
 is_unlocked = false
-unlock_cost = 25000
+unlock_cost = 18000

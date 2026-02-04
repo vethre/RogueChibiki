@@ -34,6 +34,9 @@ var enemy_weakened: int = 0
 var fortify_block: int = 0
 var pending_draw_on_kill: bool = false
 
+# Balance Master tracking (KoryaMC)
+var last_card_type_played: int = -1  # -1 = none, 0 = attack, 1 = defend
+
 # Boss effect tracking
 var is_first_turn: bool = true
 var boss_effect_active: bool = false
@@ -60,7 +63,7 @@ func _ready() -> void:
 	hand.selection_changed.connect(_on_selection_changed)
 
 func _on_selection_changed(selected_cards: Array[Card]) -> void:
-	var total_cost = hand.get_total_selected_cost()
+	var total_cost = hand.get_total_selected_cost(get_card_cost_reduction())
 	hand_selection_changed.emit(selected_cards.size(), total_cost)
 
 func start_combat(char_data: CharacterData) -> void:
@@ -86,7 +89,7 @@ func start_combat(char_data: CharacterData) -> void:
 		# Get enemy stats from run manager (difficulty scaled)
 		enemy_max_hp = RunManager.get_enemy_hp_for_floor()
 		var dmg_range = RunManager.get_enemy_damage_for_floor()
-		enemy_damage = randi_range(dmg_range.x, dmg_range.y)
+		enemy_damage = RunManager.seeded_randi_range(dmg_range.x, dmg_range.y)
 
 		# Check if this is a boss encounter with an effect
 		if RunManager.get_current_encounter_type() == RunManager.EncounterType.BOSS:
@@ -111,7 +114,7 @@ func start_combat(char_data: CharacterData) -> void:
 		RunManager.next_enemy_weakened = 0
 
 	draw_pile = deck.duplicate()
-	draw_pile.shuffle()
+	_seeded_shuffle(draw_pile)
 	discard_pile.clear()
 
 	_apply_start_of_combat_passive()
@@ -130,11 +133,22 @@ func _apply_start_of_combat_passive() -> void:
 
 func _start_player_turn() -> void:
 	current_state = CombatState.PLAYER_TURN
-	player_block = 0
 
-	# Apply fortify block from previous turn
+	# Boss effect: FRAIL - block decays completely
+	if _is_boss_effect_active() and RunManager.get_current_boss_effect() == RunManager.BossEffect.FRAIL:
+		if player_block > 0:
+			player_block = 0
+			card_effect_triggered.emit("FRAIL!")
+	else:
+		# Normal block decay by 50% each turn (prevents infinite stacking)
+		if player_block > 0:
+			var decay = int(player_block * 0.5)
+			decay = max(1, decay)  # Always lose at least 1 block
+			player_block = max(0, player_block - decay)
+
+	# Apply fortify block from previous turn (adds to existing block)
 	if fortify_block > 0:
-		player_block = fortify_block
+		player_block += fortify_block
 		block_gained.emit("player", fortify_block)
 		fortify_block = 0
 
@@ -144,16 +158,17 @@ func _start_player_turn() -> void:
 	if character.passive_type == CharacterData.PassiveType.BONUS_ENERGY:
 		player_energy += character.passive_value
 
-	# Apply boss effects
-	if boss_effect_active:
+	# Apply boss effects (use robust check)
+	if _is_boss_effect_active():
 		_apply_boss_effect_start_turn()
 
 	cards_played_this_turn = 0
+	last_card_type_played = -1  # Reset balance master tracking
 
 	var draw_count = cards_to_draw + RunManager.get_bonus_draw()
 
 	# Boss effect: reduced hand
-	if boss_effect_active and RunManager.get_current_boss_effect() == RunManager.BossEffect.REDUCED_HAND:
+	if _is_boss_effect_active() and RunManager.get_current_boss_effect() == RunManager.BossEffect.REDUCED_HAND:
 		draw_count = max(1, draw_count - 2)
 
 	_draw_cards(draw_count)
@@ -188,16 +203,39 @@ func _apply_boss_effect_start_turn() -> void:
 					enemy_hp += heal_amount
 					card_effect_triggered.emit("BOSS HEALS +%d" % heal_amount)
 
+func _is_boss_effect_active() -> bool:
+	"""Check if boss effects should be applied - uses robust direct check."""
+	return is_run_combat and RunManager.get_current_encounter_type() == RunManager.EncounterType.BOSS and RunManager.get_current_boss_effect() != RunManager.BossEffect.NONE
+
 func get_boss_damage_modifier() -> int:
 	"""Get damage modifier from boss effect."""
-	if boss_effect_active and RunManager.get_current_boss_effect() == RunManager.BossEffect.DEBUFFED_ATTACKS:
-		return -2
+	if _is_boss_effect_active():
+		if RunManager.get_current_boss_effect() == RunManager.BossEffect.DEBUFFED_ATTACKS:
+			return -2
 	return 0
 
 func get_boss_block_modifier() -> int:
 	"""Get block modifier from boss effect."""
-	if boss_effect_active and RunManager.get_current_boss_effect() == RunManager.BossEffect.WEAKENED_DEFENSE:
-		return -2
+	if _is_boss_effect_active():
+		if RunManager.get_current_boss_effect() == RunManager.BossEffect.WEAKENED_DEFENSE:
+			return -2
+	return 0
+
+func get_boss_damage_multiplier() -> float:
+	"""Get damage multiplier from boss effect (DOUBLE_DAMAGE = 1.5x)."""
+	if _is_boss_effect_active():
+		if RunManager.get_current_boss_effect() == RunManager.BossEffect.DOUBLE_DAMAGE:
+			return 1.5
+	return 1.0
+
+func is_card_exhaust_active() -> bool:
+	"""Check if CARD_EXHAUST boss effect is active."""
+	return _is_boss_effect_active() and RunManager.get_current_boss_effect() == RunManager.BossEffect.CARD_EXHAUST
+
+func get_card_cost_reduction() -> int:
+	"""Get cost reduction for all cards (Card Discount passive)."""
+	if character.passive_type == CharacterData.PassiveType.CARD_DISCOUNT:
+		return character.passive_value
 	return 0
 
 const MAX_HAND_SIZE: int = 10
@@ -211,9 +249,12 @@ func _draw_cards(count: int) -> void:
 			_shuffle_discard_into_draw()
 		if not draw_pile.is_empty():
 			var card = draw_pile.pop_back()
+			# Boss effect: SHUFFLED_HAND - randomize card costs
+			if _is_boss_effect_active() and RunManager.get_current_boss_effect() == RunManager.BossEffect.SHUFFLED_HAND:
+				card.chaos_cost = RunManager.seeded_randi_range(1, 3)
 			hand.add_card(card)
 
-	hand.update_playable_cards(player_energy)
+	hand.update_playable_cards(player_energy, get_card_cost_reduction())
 
 	# Check for auto-end turn after drawing
 	await get_tree().process_frame
@@ -221,14 +262,31 @@ func _draw_cards(count: int) -> void:
 
 func _shuffle_discard_into_draw() -> void:
 	draw_pile = discard_pile.duplicate()
-	draw_pile.shuffle()
+	_seeded_shuffle(draw_pile)
 	discard_pile.clear()
+
+func _seeded_shuffle(arr: Array) -> void:
+	"""Fisher-Yates shuffle using seeded RNG for deterministic results."""
+	for i in range(arr.size() - 1, 0, -1):
+		var j = RunManager.seeded_randi_range(0, i)
+		var temp = arr[i]
+		arr[i] = arr[j]
+		arr[j] = temp
 
 func _on_card_played(card_data: CardData) -> void:
 	if current_state != CombatState.PLAYER_TURN:
 		return
 
 	var energy_cost = card_data.get_effective_cost()
+
+	# Card Discount: all cards cost less energy
+	if character.passive_type == CharacterData.PassiveType.CARD_DISCOUNT:
+		energy_cost = max(0, energy_cost - character.passive_value)
+
+	# Boss effect: SILENCE - Skill cards cost +1 energy
+	if _is_boss_effect_active() and RunManager.get_current_boss_effect() == RunManager.BossEffect.SILENCE:
+		if card_data.card_type == CardData.CardType.SKILL:
+			energy_cost += 1
 
 	# Combo passive
 	if character.passive_type == CharacterData.PassiveType.COMBO_FREE_CARD:
@@ -251,6 +309,21 @@ func _on_card_played(card_data: CardData) -> void:
 		damage += RunManager.get_bonus_damage()
 		if character.passive_type == CharacterData.PassiveType.BONUS_ATTACK_DAMAGE:
 			damage += character.passive_value
+		# Balance Master: +2 damage after playing a defend card
+		if character.passive_type == CharacterData.PassiveType.BALANCE_MASTER:
+			if last_card_type_played == CardData.CardType.DEFEND:
+				damage += 2
+				card_effect_triggered.emit("BALANCED! +2 DMG")
+		# Rage Fueled: +X damage per Rage/Fury card in discard
+		if character.passive_type == CharacterData.PassiveType.RAGE_FUELED:
+			var rage_count = 0
+			for discard_card in discard_pile:
+				if discard_card.card_name == "Rage" or discard_card.card_name == "Fury":
+					rage_count += 1
+			if rage_count > 0:
+				var bonus = rage_count * character.passive_value
+				damage += bonus
+				card_effect_triggered.emit("RAGE! +%d DMG" % bonus)
 		# Apply boss effect modifier
 		damage = max(0, damage + get_boss_damage_modifier())
 
@@ -258,6 +331,11 @@ func _on_card_played(card_data: CardData) -> void:
 	var block_amount = card_data.get_effective_block()
 	if block_amount > 0:
 		block_amount += RunManager.get_bonus_block()
+		# Balance Master: +3 block after playing an attack card
+		if character.passive_type == CharacterData.PassiveType.BALANCE_MASTER:
+			if last_card_type_played == CardData.CardType.ATTACK:
+				block_amount += 3
+				card_effect_triggered.emit("BALANCED! +3 BLK")
 		# Apply boss effect modifier
 		block_amount = max(0, block_amount + get_boss_block_modifier())
 
@@ -306,17 +384,28 @@ func _on_card_played(card_data: CardData) -> void:
 		RunManager.run_gold += gold_gain
 		gold_earned.emit(gold_gain)
 		card_effect_triggered.emit("+%d GOLD!" % gold_gain)
+	elif card_data.special_effect == "attack_and_block":
+		# Balance Strike: also gain block from this attack card
+		player_block += block_amount
+		block_gained.emit("player", block_amount)
 	# draw_on_kill is handled before damage dealing
 
+	# Track last card type for Balance Master passive
+	last_card_type_played = card_data.card_type
+
 	# Card goes to discard FIRST (before drawing) to ensure proper shuffle behavior
-	discard_pile.append(card_data)
+	# Boss effect: CARD_EXHAUST - cards are exhausted (removed) instead of discarded
+	if is_card_exhaust_active():
+		card_effect_triggered.emit("EXHAUSTED!")
+	else:
+		discard_pile.append(card_data)
 
 	# Draw extra cards (use effective value for upgrades)
 	var draw_count = card_data.get_effective_draw()
 	if draw_count > 0:
 		_draw_cards(draw_count)
 
-	hand.update_playable_cards(player_energy)
+	hand.update_playable_cards(player_energy, get_card_cost_reduction())
 	player_stats_changed.emit()
 
 	_check_combat_end()
@@ -351,7 +440,7 @@ func can_play_selected_cards() -> bool:
 	var selected = hand.get_selected_cards()
 	if selected.is_empty():
 		return false
-	var total_cost = hand.get_total_selected_cost()
+	var total_cost = hand.get_total_selected_cost(get_card_cost_reduction())
 	return player_energy >= total_cost
 
 func play_selected_hand() -> void:
@@ -368,7 +457,7 @@ func play_selected_hand() -> void:
 	var cards_to_play = selected.duplicate()
 
 	# Calculate total cost before playing
-	var total_cost = hand.get_total_selected_cost()
+	var total_cost = hand.get_total_selected_cost(get_card_cost_reduction())
 
 	# Deduct energy once for all cards
 	player_energy -= total_cost
@@ -383,7 +472,7 @@ func play_selected_hand() -> void:
 		if is_instance_valid(card):
 			await _play_single_card(card.card_data, card)
 
-	hand.update_playable_cards(player_energy)
+	hand.update_playable_cards(player_energy, get_card_cost_reduction())
 	player_stats_changed.emit()
 
 	_check_combat_end()
@@ -405,6 +494,21 @@ func _play_single_card(card_data: CardData, card_instance: Card) -> void:
 		damage += RunManager.get_bonus_damage()
 		if character.passive_type == CharacterData.PassiveType.BONUS_ATTACK_DAMAGE:
 			damage += character.passive_value
+		# Balance Master: +2 damage after playing a defend card
+		if character.passive_type == CharacterData.PassiveType.BALANCE_MASTER:
+			if last_card_type_played == CardData.CardType.DEFEND:
+				damage += 2
+				card_effect_triggered.emit("BALANCED! +2 DMG")
+		# Rage Fueled: +X damage per Rage/Fury card in discard
+		if character.passive_type == CharacterData.PassiveType.RAGE_FUELED:
+			var rage_count = 0
+			for discard_card in discard_pile:
+				if discard_card.card_name == "Rage" or discard_card.card_name == "Fury":
+					rage_count += 1
+			if rage_count > 0:
+				var bonus = rage_count * character.passive_value
+				damage += bonus
+				card_effect_triggered.emit("RAGE! +%d DMG" % bonus)
 		# Apply boss effect modifier
 		damage = max(0, damage + get_boss_damage_modifier())
 
@@ -412,6 +516,11 @@ func _play_single_card(card_data: CardData, card_instance: Card) -> void:
 	var block_amount = card_data.get_effective_block()
 	if block_amount > 0:
 		block_amount += RunManager.get_bonus_block()
+		# Balance Master: +3 block after playing an attack card
+		if character.passive_type == CharacterData.PassiveType.BALANCE_MASTER:
+			if last_card_type_played == CardData.CardType.ATTACK:
+				block_amount += 3
+				card_effect_triggered.emit("BALANCED! +3 BLK")
 		# Apply boss effect modifier
 		block_amount = max(0, block_amount + get_boss_block_modifier())
 
@@ -431,8 +540,12 @@ func _play_single_card(card_data: CardData, card_instance: Card) -> void:
 	# Special effects
 	_apply_card_special_effect(card_data)
 
-	# Card goes to discard
-	discard_pile.append(card_data)
+	# Track last card type for Balance Master passive
+	last_card_type_played = card_data.card_type
+
+	# Card goes to discard (unless CARD_EXHAUST is active)
+	if not is_card_exhaust_active():
+		discard_pile.append(card_data)
 
 	# Draw extra cards
 	var draw_count = card_data.get_effective_draw()
@@ -478,13 +591,22 @@ func _apply_card_special_effect(card_data: CardData) -> void:
 			RunManager.run_gold += gold_gain
 			gold_earned.emit(gold_gain)
 			card_effect_triggered.emit("+%d GOLD!" % gold_gain)
+		"attack_and_block":
+			# Balance Strike: also gain block
+			var block_amount = card_data.get_effective_block() + RunManager.get_bonus_block()
+			block_amount = max(0, block_amount + get_boss_block_modifier())
+			player_block += block_amount
+			block_gained.emit("player", block_amount)
 
 func _deal_damage_to_enemy(damage: int) -> void:
 	var final_damage = damage
 
+	# Boss effect: DOUBLE_DAMAGE - 50% more damage
+	final_damage = int(final_damage * get_boss_damage_multiplier())
+
 	# Buster passive: crit chance
 	if character.passive_type == CharacterData.PassiveType.CRIT_CHANCE:
-		if randf() * 100.0 < character.passive_value:
+		if RunManager.seeded_randf() * 100.0 < character.passive_value:
 			final_damage *= 2
 			card_effect_triggered.emit("CRITICAL!")
 
@@ -510,12 +632,7 @@ func _deal_damage_to_enemy(damage: int) -> void:
 				card_effect_triggered.emit("+" + str(heal_amount) + " HP")
 				player_stats_changed.emit()
 
-	# Check if enemy was killed for Gaechka passive
-	if enemy_hp <= 0 and character.passive_type == CharacterData.PassiveType.DRAW_ON_KILL:
-		_draw_cards(character.passive_value)
-		card_effect_triggered.emit("+" + str(character.passive_value) + " CARDS!")
-
-	# Check for draw_on_kill special effect
+	# Check for draw_on_kill special effect (from cards like Precise Strike)
 	if enemy_hp <= 0 and pending_draw_on_kill:
 		_draw_cards(1)
 		card_effect_triggered.emit("+1 CARD!")
@@ -526,6 +643,9 @@ func _deal_damage_to_enemy(damage: int) -> void:
 	enemy_stats_changed.emit()
 
 func _deal_damage_to_player(damage: int) -> void:
+	# Boss effect: DOUBLE_DAMAGE - 50% more damage from enemies too
+	damage = int(damage * get_boss_damage_multiplier())
+
 	if enemy_weakened > 0:
 		damage = max(0, damage - 2)
 
@@ -537,6 +657,14 @@ func _deal_damage_to_player(damage: int) -> void:
 		damage_dealt.emit("player", actual_damage)
 		RunManager.record_damage(0, actual_damage)
 		RunManager.add_combat_damage_taken(actual_damage)
+
+		# Morphi passive: THORNS - reflect damage when hit
+		if character.passive_type == CharacterData.PassiveType.THORNS:
+			var thorns_damage = character.passive_value
+			enemy_hp -= thorns_damage
+			damage_dealt.emit("enemy", thorns_damage)
+			card_effect_triggered.emit("THORNS! %d" % thorns_damage)
+			enemy_stats_changed.emit()
 
 	player_stats_changed.emit()
 
@@ -571,10 +699,10 @@ func _decide_enemy_intent() -> void:
 	if enemy_hp < enemy_max_hp * 0.3:
 		attack_chance = 0.9
 
-	if randf() < attack_chance:
+	if RunManager.seeded_randf() < attack_chance:
 		enemy_intent = "attack"
 		var dmg_range = RunManager.get_enemy_damage_for_floor() if is_run_combat else Vector2i(6, 12)
-		enemy_damage = randi_range(dmg_range.x, dmg_range.y)
+		enemy_damage = RunManager.seeded_randi_range(dmg_range.x, dmg_range.y)
 	else:
 		enemy_intent = "defend"
 

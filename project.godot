@@ -23,6 +23,7 @@ StatsManager="*res://scripts/stats_manager.gd"
 VFXManager="*res://scripts/vfx_manager.gd"
 AudioManager="*res://scripts/audio_manager.gd"
 Localization="*res://scripts/localization.gd"
+NotificationManager="*res://scripts/notification_manager.gd"
 
 [display]
 
@@ -31,14 +32,14 @@ window/size/viewport_height=720
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
-[gui]
-
-theme/custom="res://themes/main_theme.tres"
-
 [editor]
 
 version_control/plugin_name="GitPlugin"
 version_control/autoload_on_startup=true
+
+[gui]
+
+theme/custom="res://themes/main_theme.tres"
 
 [input_devices]
 

@@ -1,13 +1,28 @@
 extends Control
 
-# Card pool for shop
+# Card pool for shop - includes ALL available cards
 const ALL_CARDS = [
+	# Basic cards
 	preload("res://data/card_strike.tres"),
 	preload("res://data/card_defend.tres"),
 	preload("res://data/card_iron_wall.tres"),
 	preload("res://data/card_rage.tres"),
 	preload("res://data/card_weaken.tres"),
-	preload("res://data/card_quick_draw.tres")
+	preload("res://data/card_quick_draw.tres"),
+	# Uncommon cards
+	preload("res://data/card_fortify.tres"),
+	preload("res://data/card_overcharge.tres"),
+	preload("res://data/card_precise_strike.tres"),
+	preload("res://data/card_flurry.tres"),
+	preload("res://data/card_mind_crush.tres"),
+	preload("res://data/card_golden_opportunity.tres"),
+	preload("res://data/card_reckless_strike.tres"),
+	preload("res://data/card_drain_life.tres"),
+	preload("res://data/card_all_in.tres"),
+	# New cards
+	preload("res://data/card_balance_strike.tres"),
+	preload("res://data/card_fury.tres"),
+	preload("res://data/card_spike_armor.tres"),
 ]
 
 # Upgrade definitions
@@ -88,6 +103,8 @@ func _ready() -> void:
 	_update_ui()
 	# Delay animation to next frame so layout is computed
 	call_deferred("_play_entrance_animation")
+	# Play shop music
+	AudioManager.play_shop_music()
 
 func _connect_signals() -> void:
 	continue_btn.pressed.connect(_on_continue)
@@ -102,9 +119,9 @@ func _connect_signals() -> void:
 	card_btn_3.pressed.connect(_on_buy_card.bind(2))
 
 func _setup_shop() -> void:
-	# Generate 3 random cards for individual sale
+	# Generate 3 random cards for individual sale (using seeded RNG)
 	var available_cards = ALL_CARDS.duplicate()
-	available_cards.shuffle()
+	_seeded_shuffle(available_cards)
 
 	for i in range(3):
 		var card = available_cards[i].duplicate()
@@ -116,24 +133,9 @@ func _setup_shop() -> void:
 		portrait.texture = GameManager.selected_character.portrait
 
 func _style_buttons() -> void:
-	# Style pack buttons with warm colors and icons
-	_apply_button_style(upg_pack_btn, COLOR_LAVENDER, Color(0.2, 0.15, 0.3))
-	_apply_button_style(card_pack_btn, COLOR_SKY_BLUE, Color(0.15, 0.2, 0.3))
-
-	# Apply pack icons - fill entire button
-	upg_pack_btn.icon = UPG_PACK_ICON
-	upg_pack_btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	upg_pack_btn.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
-	upg_pack_btn.expand_icon = true
-	upg_pack_btn.add_theme_constant_override("icon_max_width", 120)
-	upg_pack_btn.text = ""  # Clear text, we'll add price label separately
-
-	card_pack_btn.icon = CARD_PACK_ICON
-	card_pack_btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	card_pack_btn.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
-	card_pack_btn.expand_icon = true
-	card_pack_btn.add_theme_constant_override("icon_max_width", 120)
-	card_pack_btn.text = ""  # Clear text, we'll add price label separately
+	# Style pack buttons with custom layout - big centered icon with price badge
+	_style_pack_button(upg_pack_btn, UPG_PACK_ICON, COLOR_LAVENDER, "UPG")
+	_style_pack_button(card_pack_btn, CARD_PACK_ICON, COLOR_SKY_BLUE, "CARD")
 
 	# Price labels will be updated in _update_ui with scaling costs
 
@@ -151,8 +153,122 @@ func _style_buttons() -> void:
 	# Style continue button
 	_apply_button_style(continue_btn, COLOR_WARM_GOLD, Color(0.2, 0.18, 0.08))
 
+	# Style menu button
+	_apply_button_style(menu_btn, COLOR_CORAL, Color(0.2, 0.1, 0.1))
+
 	# Style HP bar
 	_style_hp_bar()
+
+	# Style top bar labels
+	_style_top_bar()
+
+func _style_top_bar() -> void:
+	# Stage label style
+	stage_label.add_theme_font_size_override("font_size", 14)
+	stage_label.add_theme_color_override("font_color", COLOR_LAVENDER)
+
+	# Score label style
+	score_label.add_theme_font_size_override("font_size", 14)
+	score_label.add_theme_color_override("font_color", COLOR_WARM_GOLD)
+
+func _style_pack_button(btn: Button, icon_texture: Texture2D, accent_color: Color, pack_name: String) -> void:
+	# Clear default button text
+	btn.text = ""
+	btn.icon = null
+
+	# Create dark gradient background style
+	var bg_style = StyleBoxFlat.new()
+	bg_style.bg_color = Color(0.08, 0.06, 0.12, 0.95)
+	bg_style.border_width_left = 3
+	bg_style.border_width_top = 3
+	bg_style.border_width_right = 3
+	bg_style.border_width_bottom = 3
+	bg_style.border_color = accent_color
+	bg_style.corner_radius_top_left = 12
+	bg_style.corner_radius_top_right = 12
+	bg_style.corner_radius_bottom_right = 12
+	bg_style.corner_radius_bottom_left = 12
+	bg_style.shadow_color = Color(accent_color.r, accent_color.g, accent_color.b, 0.3)
+	bg_style.shadow_size = 4
+	btn.add_theme_stylebox_override("normal", bg_style)
+
+	# Hover style
+	var hover_style = bg_style.duplicate()
+	hover_style.bg_color = Color(0.12, 0.1, 0.18)
+	hover_style.border_color = Color(accent_color.r + 0.15, accent_color.g + 0.15, accent_color.b + 0.15)
+	btn.add_theme_stylebox_override("hover", hover_style)
+
+	# Pressed style
+	var pressed_style = bg_style.duplicate()
+	pressed_style.bg_color = Color(0.15, 0.12, 0.22)
+	btn.add_theme_stylebox_override("pressed", pressed_style)
+
+	# Disabled style
+	var disabled_style = bg_style.duplicate()
+	disabled_style.bg_color = Color(0.06, 0.05, 0.08)
+	disabled_style.border_color = Color(0.25, 0.25, 0.3)
+	btn.add_theme_stylebox_override("disabled", disabled_style)
+
+	# Large centered pack icon
+	var pack_icon = TextureRect.new()
+	pack_icon.name = "PackIcon"
+	pack_icon.texture = icon_texture
+	pack_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	pack_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	pack_icon.set_anchors_preset(Control.PRESET_FULL_RECT)
+	pack_icon.offset_left = 8
+	pack_icon.offset_top = 5
+	pack_icon.offset_right = -8
+	pack_icon.offset_bottom = -25
+	pack_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	btn.add_child(pack_icon)
+
+	# Pack name label at top
+	var name_label = Label.new()
+	name_label.name = "NameLabel"
+	name_label.text = pack_name + " PACK"
+	name_label.add_theme_font_size_override("font_size", 11)
+	name_label.add_theme_color_override("font_color", accent_color)
+	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_label.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	name_label.offset_top = 3
+	name_label.offset_bottom = 18
+	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	btn.add_child(name_label)
+
+	# Price badge at bottom (styled container)
+	var price_badge = Panel.new()
+	price_badge.name = "PriceBadge"
+	var badge_style = StyleBoxFlat.new()
+	badge_style.bg_color = Color(0.15, 0.12, 0.08, 0.95)
+	badge_style.border_width_left = 2
+	badge_style.border_width_top = 2
+	badge_style.border_width_right = 2
+	badge_style.border_width_bottom = 2
+	badge_style.border_color = COLOR_WARM_GOLD
+	badge_style.corner_radius_top_left = 8
+	badge_style.corner_radius_top_right = 8
+	badge_style.corner_radius_bottom_right = 8
+	badge_style.corner_radius_bottom_left = 8
+	price_badge.add_theme_stylebox_override("panel", badge_style)
+	price_badge.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
+	price_badge.offset_left = -35
+	price_badge.offset_right = 35
+	price_badge.offset_top = -28
+	price_badge.offset_bottom = -4
+	price_badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	btn.add_child(price_badge)
+
+	# Price label inside badge
+	var price_label = Label.new()
+	price_label.name = "PriceLabel"
+	price_label.add_theme_font_size_override("font_size", 16)
+	price_label.add_theme_color_override("font_color", COLOR_WARM_GOLD)
+	price_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	price_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	price_label.set_anchors_preset(Control.PRESET_FULL_RECT)
+	price_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	price_badge.add_child(price_label)
 
 func _apply_button_style(btn: Button, border_color: Color, bg_color: Color) -> void:
 	var style = StyleBoxFlat.new()
@@ -207,22 +323,12 @@ func _style_hp_bar() -> void:
 	hp_bar.add_theme_stylebox_override("fill", fill_style)
 
 func _update_pack_price_label(btn: Button, cost: int) -> void:
-	# Find or create the price label
-	var price_label = btn.get_node_or_null("PriceLabel")
-	if not price_label:
-		price_label = Label.new()
-		price_label.name = "PriceLabel"
-		price_label.add_theme_font_size_override("font_size", 18)
-		price_label.add_theme_color_override("font_color", COLOR_WARM_GOLD)
-		price_label.add_theme_color_override("font_outline_color", Color(0, 0, 0, 1))
-		price_label.add_theme_constant_override("outline_size", 4)
-		price_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		price_label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
-		price_label.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-		price_label.offset_top = -30
-		price_label.offset_bottom = -5
-		btn.add_child(price_label)
-	price_label.text = "%dG" % cost
+	# Find the price label inside PriceBadge
+	var price_badge = btn.get_node_or_null("PriceBadge")
+	if price_badge:
+		var price_label = price_badge.get_node_or_null("PriceLabel")
+		if price_label:
+			price_label.text = "%dG" % cost
 
 func _play_entrance_animation() -> void:
 	# Simple fade in (no scale - keeps layout clean)
@@ -267,7 +373,7 @@ func _get_card_price(card: CardData) -> int:
 			base_price = 55
 
 	base_price = int(base_price * (1.0 + (RunManager.current_stage - 1) * 0.05))
-	return int(base_price * randf_range(0.85, 1.15))
+	return int(base_price * RunManager.seeded_randf_range(0.85, 1.15))
 
 func _update_ui() -> void:
 	# Update HP bar and label
@@ -287,8 +393,11 @@ func _update_ui() -> void:
 	# Update gold
 	gold_label.text = "%d" % RunManager.run_gold
 
-	# Update top bar
-	stage_label.text = "Stage: %d | Floor: %d" % [RunManager.current_stage, RunManager.current_floor]
+	# Update top bar with stage, floor, and seed info
+	var seed_text = ""
+	if RunManager.is_run_seeded():
+		seed_text = " | Seed: %s" % RunManager.get_run_seed()
+	stage_label.text = "Stage: %d | Floor: %d%s" % [RunManager.current_stage, RunManager.current_floor, seed_text]
 	score_label.text = "Score: %d" % RunManager.run_score
 
 	# Update heal button
@@ -401,15 +510,16 @@ func _show_upg_pack_options() -> void:
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	main_vbox.add_child(grid)
 
-	# Large pool of options - randomly pick 4 each time (roguelike variety)
+	# Large pool of options - randomly pick 5 each time (roguelike variety)
 	var all_options = [
 		"heal", "energy", "damage", "block", "draw", "gold",
 		"upgrade_card", "remove_card",
-		"max_hp", "bonus_damage", "bonus_block", "weaken_enemy"
+		"max_hp", "bonus_damage", "bonus_block", "weaken_enemy",
+		"relic"  # Added relic option
 	]
-	all_options.shuffle()
+	_seeded_shuffle(all_options)
 
-	for i in range(4):
+	for i in range(5):  # Increased from 4 to 5 options
 		var option_type = all_options[i]
 		var option_item = _create_upg_pack_option(option_type, i)
 		grid.add_child(option_item)
@@ -519,6 +629,8 @@ func _get_option_data(option_type: String) -> Dictionary:
 			return {"name": "Iron Shield", "desc": "+2 Block", "color": COLOR_SKY_BLUE, "storable": false, "value": 2}
 		"weaken_enemy":
 			return {"name": "Curse Scroll", "desc": "Weaken next enemy", "color": COLOR_LAVENDER, "storable": true, "value": 2}
+		"relic":
+			return {"name": "Mystery Relic", "desc": "Get a random relic", "color": Color(1.0, 0.6, 0.2), "storable": false, "value": 0}
 	return {"name": "Unknown", "desc": "", "color": Color.WHITE, "storable": false, "value": 0}
 
 func _use_upg_pack_option(option_type: String, option_data: Dictionary) -> void:
@@ -567,6 +679,13 @@ func _use_upg_pack_option(option_type: String, option_data: Dictionary) -> void:
 		"weaken_enemy":
 			RunManager.next_enemy_weakened += option_data.value
 			_show_toast("Next enemy weakened!", COLOR_LAVENDER)
+		"relic":
+			# Don't call _close_popup() - _show_relic_popup() -> _create_popup() handles it
+			if popup_panel:
+				popup_panel.queue_free()
+				popup_panel = null
+			_show_relic_popup()
+			return
 	_close_popup()
 	_update_ui()
 
@@ -696,7 +815,7 @@ func _on_continue() -> void:
 	tween.chain().tween_callback(func(): RunManager.complete_encounter(true, RunManager.run_hp, 0))
 
 func _on_menu() -> void:
-	get_tree().change_scene_to_file("res://scenes/main_menu/main_menu.tscn")
+	VFXManager.transition_to_scene("res://scenes/ui/main_menu.tscn")
 
 # ============ POPUP HELPERS ============
 
@@ -1024,11 +1143,11 @@ func _show_card_pack_popup(cost: int = 50) -> void:
 	hbox.alignment = BoxContainer.ALIGNMENT_CENTER
 	main_vbox.add_child(hbox)
 
-	# Generate 3 random cards
+	# Generate 4 random cards (increased from 3)
 	var available_cards = ALL_CARDS.duplicate()
-	available_cards.shuffle()
+	_seeded_shuffle(available_cards)
 
-	for i in range(3):
+	for i in range(4):
 		var card = available_cards[i].duplicate()
 		var card_item = _create_pack_card_item(card)
 		hbox.add_child(card_item)
@@ -1208,6 +1327,14 @@ func _on_upgrade_card(index: int) -> void:
 	_update_ui()
 
 # ============ TOAST ============
+
+func _seeded_shuffle(arr: Array) -> void:
+	"""Fisher-Yates shuffle using seeded RNG for deterministic results."""
+	for i in range(arr.size() - 1, 0, -1):
+		var j = RunManager.seeded_randi_range(0, i)
+		var temp = arr[i]
+		arr[i] = arr[j]
+		arr[j] = temp
 
 func _show_toast(text: String, color: Color = COLOR_WARM_GOLD) -> void:
 	var toast = Label.new()

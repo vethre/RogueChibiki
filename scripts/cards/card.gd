@@ -29,6 +29,7 @@ var description_label: Label
 var type_label: Label
 var card_border: Panel
 var upgrade_badge: Panel
+var holo_overlay: ColorRect
 
 # Colors for card types
 const TYPE_COLORS = {
@@ -63,6 +64,7 @@ func _setup_card_visuals() -> void:
 	type_label = $Content/TypeLabel
 	card_border = $CardBorder
 	upgrade_badge = $UpgradeBadge if has_node("UpgradeBadge") else null
+	holo_overlay = $HoloOverlay if has_node("HoloOverlay") else null
 
 func setup_card(data: CardData) -> void:
 	card_data = data
@@ -88,9 +90,11 @@ func _apply_card_visuals() -> void:
 	else:
 		description_label.text = card_data.get_upgraded_description()
 
-	# Show/hide upgrade badge
+	# Show/hide upgrade badge and holographic effect
 	if upgrade_badge:
 		upgrade_badge.visible = card_data.is_upgraded
+	if holo_overlay:
+		holo_overlay.visible = card_data.is_upgraded
 
 	var type_color: Color
 	match card_data.card_type:
@@ -187,14 +191,37 @@ func select() -> void:
 	is_selected = true
 	z_index = 60
 
-	# Animate card raising up
+	# Animate card raising up with enhanced glow
 	var tween = create_tween()
 	tween.set_parallel(true)
 	tween.tween_property(self, "position:y", position.y + selected_position_offset, 0.15).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 	tween.tween_property(self, "rotation", 0.0, 0.15)
-	tween.tween_property(glow, "modulate:a", 0.8, 0.15)
+	tween.tween_property(glow, "modulate:a", 1.0, 0.15)
+	tween.tween_property(glow, "scale", Vector2(1.15, 1.15), 0.15)
+
+	# Start pulsing glow effect
+	_start_glow_pulse()
+
+	# Light haptic feedback
+	VFXManager.vibrate_light()
 
 	card_selected.emit(self)
+
+var _glow_pulse_tween: Tween = null
+
+func _start_glow_pulse() -> void:
+	if _glow_pulse_tween and _glow_pulse_tween.is_valid():
+		_glow_pulse_tween.kill()
+
+	_glow_pulse_tween = create_tween()
+	_glow_pulse_tween.set_loops()
+	_glow_pulse_tween.tween_property(glow, "modulate:a", 0.6, 0.5).set_ease(Tween.EASE_IN_OUT)
+	_glow_pulse_tween.tween_property(glow, "modulate:a", 1.0, 0.5).set_ease(Tween.EASE_IN_OUT)
+
+func _stop_glow_pulse() -> void:
+	if _glow_pulse_tween and _glow_pulse_tween.is_valid():
+		_glow_pulse_tween.kill()
+		_glow_pulse_tween = null
 
 func deselect() -> void:
 	if not is_selected:
@@ -202,11 +229,15 @@ func deselect() -> void:
 	is_selected = false
 	z_index = original_index
 
+	# Stop pulsing glow
+	_stop_glow_pulse()
+
 	# Animate card returning down
 	var tween = create_tween()
 	tween.set_parallel(true)
 	tween.tween_property(self, "position:y", position.y - selected_position_offset, 0.15).set_ease(Tween.EASE_OUT)
 	tween.tween_property(self, "rotation", original_rotation, 0.15)
+	tween.tween_property(glow, "scale", Vector2(1.0, 1.0), 0.15)
 	if is_playable:
 		tween.tween_property(glow, "modulate:a", 0.4, 0.15)
 	else:

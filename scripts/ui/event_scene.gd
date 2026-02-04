@@ -4,7 +4,7 @@ var current_event: Dictionary = {}
 var choice_buttons: Array[Button] = []
 
 @onready var title_label = $SafeArea/VBox/TitleLabel
-@onready var description_label = $SafeArea/VBox/DescriptionLabel
+@onready var description_label = $SafeArea/VBox/EventPanel/Margin/DescriptionLabel
 @onready var choices_container = $SafeArea/VBox/ChoicesContainer
 @onready var result_panel = $ResultPanel
 @onready var result_label = $ResultPanel/VBox/ResultLabel

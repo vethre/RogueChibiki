@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(xargs -I {} powershell -Command \"\\(Get-Content {}\\) -replace ''upgrade_cost_reduction = 0'', ''upgrade_cost_increase = 1'' | Set-Content {}\")"
+    ]
+  }
+}

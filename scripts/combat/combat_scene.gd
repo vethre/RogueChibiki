@@ -15,6 +15,7 @@ extends Control
 @onready var enemy_hp_label: Label = $EnemyArea/HPContainer/HPLabel
 @onready var enemy_block_label: Label = $EnemyArea/BlockLabel
 @onready var enemy_intent_label: Label = $EnemyArea/IntentLabel
+@onready var boss_effect_label: Label = $EnemyArea/BossEffectLabel
 
 # Top bar
 @onready var gold_label: Label = $TopBar/HBox/GoldContainer/GoldLabel
@@ -29,6 +30,9 @@ extends Control
 # Consumables UI (created dynamically)
 var consumables_panel: Panel = null
 var consumables_container: HBoxContainer = null
+
+# Seed display button
+var seed_button: Button = null
 
 # Deck info (minimal labels)
 @onready var draw_pile_label: Label = $DeckInfo/DrawPile
@@ -87,9 +91,11 @@ var enemy_sprites: Array[String] = [
 	"res://assets/cmorphe.PNG",
 	"res://assets/cyuuechka.PNG",
 	"res://assets/morphilina.PNG",
-	"res://assets/sasavot.PNG"
+	"res://assets/sasavot.PNG",
+	"res://assets/gwinglade.PNG",
+	"res://assets/shadowkekw.PNG"
 ]
-var enemy_names: Array[String] = ["Cmorphe", "Cyuuechka", "Morphilina", "Sasavot"]
+var enemy_names: Array[String] = ["Cmorphe", "Cyuuechka", "Morphilina", "Sasavot", "Gwinglade", "Shadowkekw"]
 
 var energy_orbs: Array[Control] = []
 var energy_icon_texture: Texture2D
@@ -146,6 +152,7 @@ func _ready() -> void:
 
 	_setup_energy_orbs()
 	_setup_consumables_panel()
+	_setup_seed_button()
 	_update_relics_display()
 	_update_consumables_display()
 	_apply_localization()
@@ -258,6 +265,58 @@ func _setup_consumables_panel() -> void:
 	consumables_container.alignment = BoxContainer.ALIGNMENT_CENTER
 	consumables_container.add_theme_constant_override("separation", 6)
 	consumables_panel.add_child(consumables_container)
+
+func _setup_seed_button() -> void:
+	if not RunManager.is_run_active:
+		return
+
+	# Create seed button (top right, below menu button)
+	seed_button = Button.new()
+	seed_button.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	seed_button.offset_left = -120
+	seed_button.offset_right = -8
+	seed_button.offset_top = 50
+	seed_button.offset_bottom = 80
+
+	var seed_text = RunManager.get_run_seed()
+	seed_button.text = seed_text
+	seed_button.tooltip_text = "Tap to copy seed"
+	seed_button.add_theme_font_size_override("font_size", 12)
+
+	var btn_style = StyleBoxFlat.new()
+	btn_style.bg_color = Color(0.1, 0.1, 0.15, 0.8)
+	btn_style.border_width_left = 1
+	btn_style.border_width_top = 1
+	btn_style.border_width_right = 1
+	btn_style.border_width_bottom = 1
+	btn_style.border_color = Color(0.4, 0.4, 0.5, 0.6)
+	btn_style.corner_radius_top_left = 6
+	btn_style.corner_radius_top_right = 6
+	btn_style.corner_radius_bottom_left = 6
+	btn_style.corner_radius_bottom_right = 6
+	seed_button.add_theme_stylebox_override("normal", btn_style)
+
+	var hover_style = btn_style.duplicate()
+	hover_style.bg_color = Color(0.15, 0.15, 0.2, 0.9)
+	hover_style.border_color = Color(0.5, 0.5, 0.6, 0.8)
+	seed_button.add_theme_stylebox_override("hover", hover_style)
+
+	seed_button.add_theme_color_override("font_color", Color(0.7, 0.7, 0.8))
+	seed_button.pressed.connect(_on_seed_button_pressed)
+	add_child(seed_button)
+
+func _on_seed_button_pressed() -> void:
+	var seed_text = RunManager.get_run_seed()
+	DisplayServer.clipboard_set(seed_text)
+	AudioManager.play_card_pickup()
+	_on_effect_triggered("Seed copied!")
+
+	# Flash the button to show it was copied
+	if seed_button:
+		seed_button.add_theme_color_override("font_color", Color(0.4, 1.0, 0.5))
+		await get_tree().create_timer(0.5).timeout
+		if is_instance_valid(seed_button):
+			seed_button.add_theme_color_override("font_color", Color(0.7, 0.7, 0.8))
 
 func _update_consumables_display() -> void:
 	if not consumables_container:
@@ -433,8 +492,8 @@ func _start_combat() -> void:
 	else:
 		player_portrait.texture = character.portrait
 
-	# Enemy setup
-	var enemy_index = randi() % enemy_sprites.size()
+	# Enemy setup (use seeded random for deterministic runs)
+	var enemy_index = RunManager.seeded_randi_range(0, enemy_sprites.size() - 1)
 	enemy_sprite.texture = load(enemy_sprites[enemy_index])
 
 	# Update top bar
@@ -445,14 +504,25 @@ func _start_combat() -> void:
 
 	combat_manager.start_combat(character)
 
-	# Show boss effect announcement if applicable
+	# Play appropriate music and show boss effect announcement if applicable
 	if RunManager.is_run_active:
 		var encounter = RunManager.get_current_encounter_type()
 		if encounter == RunManager.EncounterType.BOSS:
+			AudioManager.play_boss_music()
 			var boss_effect = RunManager.get_current_boss_effect()
 			if boss_effect != RunManager.BossEffect.NONE:
+				# Show boss effect label under enemy HP
+				_update_boss_effect_label()
 				await get_tree().create_timer(0.5).timeout
 				_show_boss_effect_announcement()
+			else:
+				boss_effect_label.hide()
+		else:
+			AudioManager.play_combat_music()
+			boss_effect_label.hide()
+	else:
+		AudioManager.play_combat_music()
+		boss_effect_label.hide()
 
 func _update_run_info() -> void:
 	if RunManager.is_run_active:
@@ -796,14 +866,22 @@ func _show_broken_relics(broken_relics: Array[RelicData]) -> void:
 
 	_update_relics_display()
 
+func _update_boss_effect_label() -> void:
+	"""Update boss effect label under enemy HP."""
+	var effect_name = RunManager.get_boss_effect_name()
+	var effect_desc = RunManager.get_boss_effect_description()
+	boss_effect_label.text = "%s\n%s" % [effect_name, effect_desc]
+	boss_effect_label.show()
+
 func _show_boss_effect_announcement() -> void:
 	"""Show boss effect announcement at combat start."""
 	var effect_name = RunManager.get_boss_effect_name()
 	var effect_desc = RunManager.get_boss_effect_description()
 
-	# Create overlay
+	# Create overlay (high z_index to appear above cards)
 	var overlay = Panel.new()
 	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	overlay.z_index = 100  # Ensure it's above all cards and UI elements
 
 	var overlay_style = StyleBoxFlat.new()
 	overlay_style.bg_color = Color(0, 0, 0, 0.7)
@@ -866,14 +944,14 @@ func _on_continue_pressed() -> void:
 			RunManager.complete_encounter(true, combat_manager.player_hp, gold_earned_this_combat)
 		else:
 			RunManager.complete_encounter(false, 0, 0)
-			get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+			VFXManager.transition_to_scene("res://scenes/ui/main_menu.tscn")
 	else:
 		_start_combat()
 
 func _on_menu_pressed() -> void:
 	if RunManager.is_run_active:
 		RunManager.complete_encounter(false, 0, 0)
-	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+	VFXManager.transition_to_scene("res://scenes/ui/main_menu.tscn")
 
 # === PAUSE MENU ===
 
@@ -918,14 +996,14 @@ func _on_pause_resume_pressed() -> void:
 func _on_pause_settings_pressed() -> void:
 	AudioManager.play_card_pickup()
 	get_tree().paused = false
-	get_tree().change_scene_to_file("res://scenes/ui/settings_scene.tscn")
+	VFXManager.transition_to_scene("res://scenes/ui/settings_scene.tscn")
 
 func _on_pause_main_menu_pressed() -> void:
 	AudioManager.play_card_pickup()
 	get_tree().paused = false
 	if RunManager.is_run_active:
 		RunManager.complete_encounter(false, 0, 0)
-	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+	VFXManager.transition_to_scene("res://scenes/ui/main_menu.tscn")
 
 func _on_pause_quit_pressed() -> void:
 	get_tree().quit()
@@ -1074,6 +1152,8 @@ func _on_damage_dealt(target: String, amount: int) -> void:
 		if StatsManager.screen_shake:
 			_screen_shake()
 		_flash_portrait()
+		# VFX: screen flash and vibration when player takes damage
+		VFXManager.flash_damage()
 
 	damage_label.show()
 	damage_label.scale = Vector2(1.3, 1.3)
@@ -1091,6 +1171,11 @@ func _on_damage_dealt(target: String, amount: int) -> void:
 func _on_block_gained(target: String, amount: int) -> void:
 	if amount <= 0:
 		return
+
+	# Play block SFX and VFX for player
+	if target == "player":
+		AudioManager.play_block()
+		VFXManager.flash_block()
 
 	effect_label.text = "+%d" % amount
 	effect_label.modulate = Color(0.3, 0.6, 1.0)
@@ -1115,6 +1200,10 @@ func _on_effect_triggered(effect: String) -> void:
 	effect_label.text = effect
 	effect_label.modulate = Color(1, 0.9, 0.3)
 	effect_label.position = Vector2(size.x / 2 - 60, size.y / 2 - 50)
+
+	# VFX: screen flash for critical hits
+	if "CRITICAL" in effect.to_upper():
+		VFXManager.flash_critical()
 
 	effect_label.show()
 	effect_label.scale = Vector2(0.5, 0.5)
@@ -1269,4 +1358,4 @@ func _on_end_run_victory_pressed() -> void:
 		run_complete_panel.queue_free()
 		run_complete_panel = null
 	RunManager.end_run_with_victory()
-	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+	VFXManager.transition_to_scene("res://scenes/ui/main_menu.tscn")

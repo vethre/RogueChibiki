@@ -1,19 +1,14 @@
-[gd_resource type="Resource" script_class="CardData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="CardData" load_steps=2 format=3 uid="uid://bdkhgsh1brchx"]
 
 [ext_resource type="Script" uid="uid://ysbw5184i56c" path="res://scripts/cards/card_data.gd" id="1_script"]
 
 [resource]
 script = ExtResource("1_script")
 card_name = "Overcharge"
-energy_cost = 1
 card_type = 2
 description = "Gain 2 Energy. Draw 1 card."
 rarity = 1
-damage = 0
-block = 0
 draw_cards = 1
 special_effect = "gain_energy_2"
 upgrade_damage = 0
 upgrade_block = 0
-upgrade_draw = 1
-upgrade_cost_reduction = 0

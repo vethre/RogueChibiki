@@ -1,3 +1,0 @@
-FIXES:
-- Full rework of combat screen (animations, new assets added: wood_table.png, button_bg.png, button_bg2.png, fresh and cozy look): bigger sprite of our character (ensure if the skin is chosen to display it), energy-lightning.png to display how many energies do we have, better look for relics
-- Fix the deck size infinite effect (make the Out of Cards splash, when every card was used)

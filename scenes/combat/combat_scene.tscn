@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://combat001"]
+[gd_scene load_steps=13 format=3 uid="uid://combat001"]
 
 [ext_resource type="Script" uid="uid://doh53ydn0fu3m" path="res://scripts/combat/combat_scene.gd" id="1_scene"]
 [ext_resource type="Script" uid="uid://cdnhore2vw762" path="res://scripts/combat/combat_manager.gd" id="2_manager"]
@@ -39,6 +39,20 @@ bg_color = Color(0, 0, 0, 0.6)
 corner_radius_bottom_right = 16
 corner_radius_bottom_left = 16
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_character"]
+bg_color = Color(0.12, 0.09, 0.18, 0.92)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.55, 0.4, 0.75, 0.75)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0.35, 0.18, 0.55, 0.25)
+shadow_size = 5
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hpbg"]
 bg_color = Color(0.03, 0.02, 0.05, 0.85)
 border_width_left = 1
@@ -57,20 +71,6 @@ corner_radius_top_left = 14
 corner_radius_top_right = 14
 corner_radius_bottom_right = 14
 corner_radius_bottom_left = 14
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_character"]
-bg_color = Color(0.12, 0.09, 0.18, 0.92)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.55, 0.4, 0.75, 0.75)
-corner_radius_top_left = 16
-corner_radius_top_right = 16
-corner_radius_bottom_right = 16
-corner_radius_bottom_left = 16
-shadow_color = Color(0.35, 0.18, 0.55, 0.25)
-shadow_size = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_result"]
 bg_color = Color(0.05, 0.03, 0.1, 0.95)
@@ -196,7 +196,6 @@ vertical_alignment = 1
 
 [node name="PlayerArea" type="Panel" parent="."]
 layout_mode = 1
-anchors_preset = 0
 offset_left = 50.0
 offset_top = 175.0
 offset_right = 280.0
@@ -356,6 +355,21 @@ theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 16
 text = "Attack 8"
 horizontal_alignment = 1
+
+[node name="BossEffectLabel" type="Label" parent="EnemyArea"]
+visible = false
+layout_mode = 1
+offset_left = 10.0
+offset_top = 202.0
+offset_right = 150.0
+offset_bottom = 240.0
+theme_override_colors/font_color = Color(1, 0.35, 0.35, 0.95)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 12
+text = "Boss Effect"
+horizontal_alignment = 1
+autowrap_mode = 2
 
 [node name="EnergyPanel" type="Panel" parent="."]
 layout_mode = 1

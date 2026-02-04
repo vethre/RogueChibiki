@@ -9,3 +9,6 @@ energy_cost = 0
 description = "Deal 4 damage. Draw 1 card."
 damage = 4
 draw_cards = 1
+upgrade_damage = 2
+upgrade_block = 0
+upgrade_draw = 0

@@ -1,6 +1,6 @@
-extends Node
+extends CanvasLayer
 
-# Visual Effects Manager - creates particles, glare, and ambient effects
+# Visual Effects Manager - creates particles, glare, ambient effects, screen flash, transitions
 
 # Particle colors
 const GOLD_COLOR = Color(1, 0.85, 0.2)
@@ -9,6 +9,197 @@ const HEAL_COLOR = Color(0.3, 1, 0.4)
 const BLOCK_COLOR = Color(0.3, 0.6, 1)
 const ENERGY_COLOR = Color(1, 0.9, 0.4)
 const PURPLE_GLOW = Color(0.6, 0.4, 1)
+
+# Screen overlays
+var flash_overlay: ColorRect
+var transition_overlay: ColorRect
+var gradient_overlay: ColorRect
+var ambient_container: Control
+var gradient_shader: ShaderMaterial
+
+# Ambient particles
+const MAX_AMBIENT_PARTICLES = 25
+var ambient_particles: Array[Control] = []
+
+func _ready() -> void:
+	layer = 100  # On top of everything
+	_setup_gradient_overlay()
+	_setup_ambient_particles()
+	_setup_flash_overlay()
+	_setup_transition_overlay()
+
+func _setup_gradient_overlay() -> void:
+	gradient_overlay = ColorRect.new()
+	gradient_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	gradient_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var shader = Shader.new()
+	shader.code = """
+shader_type canvas_item;
+
+uniform float time_scale : hint_range(0.01, 1.0) = 0.12;
+uniform float intensity : hint_range(0.0, 0.5) = 0.06;
+uniform vec4 color1 : source_color = vec4(0.2, 0.1, 0.3, 1.0);
+uniform vec4 color2 : source_color = vec4(0.1, 0.15, 0.25, 1.0);
+uniform vec4 color3 : source_color = vec4(0.15, 0.1, 0.2, 1.0);
+
+void fragment() {
+	float t = TIME * time_scale;
+	float wave1 = sin(UV.x * 2.0 + t) * 0.5 + 0.5;
+	float wave2 = cos(UV.y * 2.0 + t * 0.7) * 0.5 + 0.5;
+	float wave3 = sin((UV.x + UV.y) * 1.5 + t * 0.5) * 0.5 + 0.5;
+	vec4 mixed = mix(color1, color2, wave1);
+	mixed = mix(mixed, color3, wave2 * wave3);
+	COLOR = vec4(mixed.rgb, intensity);
+}
+"""
+	gradient_shader = ShaderMaterial.new()
+	gradient_shader.shader = shader
+	gradient_shader.set_shader_parameter("color1", Color(0.18, 0.08, 0.28, 1.0))
+	gradient_shader.set_shader_parameter("color2", Color(0.08, 0.15, 0.25, 1.0))
+	gradient_shader.set_shader_parameter("color3", Color(0.15, 0.06, 0.22, 1.0))
+	gradient_overlay.material = gradient_shader
+	add_child(gradient_overlay)
+
+func _setup_ambient_particles() -> void:
+	ambient_container = Control.new()
+	ambient_container.set_anchors_preset(Control.PRESET_FULL_RECT)
+	ambient_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(ambient_container)
+
+	for i in range(MAX_AMBIENT_PARTICLES):
+		_spawn_ambient_particle()
+
+func _spawn_ambient_particle() -> void:
+	var particle = ColorRect.new()
+	particle.size = Vector2(randf_range(2, 5), randf_range(2, 5))
+	particle.color = Color(1, 1, 1, randf_range(0.08, 0.2))
+	particle.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var viewport_size = Vector2(800, 600)
+	if get_viewport():
+		viewport_size = get_viewport().get_visible_rect().size
+
+	particle.position = Vector2(
+		randf_range(0, viewport_size.x),
+		randf_range(0, viewport_size.y)
+	)
+	particle.set_meta("speed", randf_range(8, 25))
+	particle.set_meta("drift", randf_range(-15, 15))
+	particle.set_meta("alpha_base", particle.color.a)
+
+	ambient_container.add_child(particle)
+	ambient_particles.append(particle)
+
+func _setup_flash_overlay() -> void:
+	flash_overlay = ColorRect.new()
+	flash_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	flash_overlay.color = Color(1, 1, 1, 0)
+	flash_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(flash_overlay)
+
+func _setup_transition_overlay() -> void:
+	transition_overlay = ColorRect.new()
+	transition_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	transition_overlay.color = Color(0, 0, 0, 0)
+	transition_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(transition_overlay)
+
+func _process(delta: float) -> void:
+	_update_ambient_particles(delta)
+
+func _update_ambient_particles(delta: float) -> void:
+	if not StatsManager.show_particles:
+		ambient_container.visible = false
+		return
+	ambient_container.visible = true
+
+	var viewport_size = Vector2(800, 600)
+	if get_viewport():
+		viewport_size = get_viewport().get_visible_rect().size
+
+	for particle in ambient_particles:
+		if not is_instance_valid(particle):
+			continue
+
+		var speed = particle.get_meta("speed")
+		var drift = particle.get_meta("drift")
+
+		particle.position.y -= speed * delta
+		particle.position.x += drift * delta
+
+		var alpha_base = particle.get_meta("alpha_base")
+		particle.color.a = alpha_base + sin(Time.get_ticks_msec() * 0.002 + particle.position.x * 0.1) * 0.05
+
+		if particle.position.y < -10:
+			particle.position.y = viewport_size.y + 10
+			particle.position.x = randf_range(0, viewport_size.x)
+
+# ============ SCREEN FLASH EFFECTS ============
+
+func flash_critical() -> void:
+	_flash(Color(1, 0.85, 0.2, 0.5), 0.05, 0.2)
+	vibrate_strong()
+
+func flash_damage() -> void:
+	_flash(Color(1, 0.15, 0.15, 0.35), 0.03, 0.12)
+	vibrate_damage()
+
+func flash_heal() -> void:
+	_flash(Color(0.2, 1, 0.4, 0.25), 0.08, 0.25)
+
+func flash_block() -> void:
+	_flash(Color(0.3, 0.5, 1, 0.2), 0.03, 0.15)
+
+func _flash(color: Color, fade_in: float, fade_out: float) -> void:
+	if StatsManager.reduced_motion:
+		return
+	flash_overlay.color = Color(color.r, color.g, color.b, 0)
+	var tween = create_tween()
+	tween.tween_property(flash_overlay, "color:a", color.a, fade_in)
+	tween.tween_property(flash_overlay, "color:a", 0.0, fade_out)
+
+# ============ HAPTIC FEEDBACK ============
+
+func vibrate_damage() -> void:
+	if StatsManager.haptic_feedback:
+		Input.vibrate_handheld(40)
+
+func vibrate_strong() -> void:
+	if StatsManager.haptic_feedback:
+		Input.vibrate_handheld(100)
+
+func vibrate_light() -> void:
+	if StatsManager.haptic_feedback:
+		Input.vibrate_handheld(20)
+
+# ============ SCENE TRANSITIONS ============
+
+func transition_to_scene(scene_path: String, duration: float = 0.5) -> void:
+	var tween = create_tween()
+	tween.tween_property(transition_overlay, "color:a", 1.0, duration / 2)
+	await tween.finished
+	get_tree().change_scene_to_file(scene_path)
+	await get_tree().process_frame
+	await get_tree().process_frame
+	fade_in(duration / 2)
+
+func fade_in(duration: float = 0.3) -> void:
+	transition_overlay.color.a = 1.0
+	var tween = create_tween()
+	tween.tween_property(transition_overlay, "color:a", 0.0, duration)
+
+func fade_out(duration: float = 0.3) -> void:
+	var tween = create_tween()
+	tween.tween_property(transition_overlay, "color:a", 1.0, duration)
+
+# ============ GRADIENT CONTROL ============
+
+func set_gradient_intensity(intensity: float) -> void:
+	if gradient_shader:
+		gradient_shader.set_shader_parameter("intensity", intensity)
+
+# ============ ORIGINAL PARTICLE EFFECTS ============
 
 # Create floating particles at position
 func spawn_particles(parent: Node, pos: Vector2, color: Color, count: int = 8) -> void:

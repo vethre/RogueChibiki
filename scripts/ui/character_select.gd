@@ -157,7 +157,10 @@ func _get_character_icon_path(character_name: String) -> String:
 		"Buster": "res://assets/Icons/Buster_Icon.png",
 		"Mokrivskyi": "res://assets/Icons/Mokrivskyi_Icon.png",
 		"Chriswave": "res://assets/Icons/Chriswave_Icon.png",
-		"Gaechka": "res://assets/Icons/Gaechka_Icon.png"
+		"Gaechka": "res://assets/Icons/Gaechka_Icon.png",
+		"ByOwl": "res://assets/Icons/ByOwl_Icon.PNG",
+		"Morphi Yuke": "res://assets/Icons/Morphi_Icon.PNG",
+		"KoryaMC": "res://assets/Icons/Korya_Icon.png"
 	}
 	return icon_map.get(character_name, "")
 
@@ -568,4 +571,4 @@ func _update_xp_display() -> void:
 
 func _on_back_pressed() -> void:
 	AudioManager.play_card_pickup()
-	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+	VFXManager.transition_to_scene("res://scenes/ui/main_menu.tscn")

@@ -48,9 +48,13 @@ func clear_hand() -> void:
 	cards.clear()
 	selection_changed.emit(selected_cards)
 
-func update_playable_cards(current_energy: int) -> void:
+func update_playable_cards(current_energy: int, cost_reduction: int = 0) -> void:
 	for card in cards:
-		card.set_playable(card.card_data.get_effective_cost() <= current_energy)
+		var cost = card.card_data.get_effective_cost()
+		# Apply cost reduction (for Card Discount passive - applies to ALL cards)
+		if cost_reduction > 0:
+			cost = max(0, cost - cost_reduction)
+		card.set_playable(cost <= current_energy)
 
 func _arrange_cards_animated() -> void:
 	var card_count = cards.size()
@@ -120,10 +124,14 @@ func get_selected_card_data() -> Array[CardData]:
 		data.append(card.card_data)
 	return data
 
-func get_total_selected_cost() -> int:
+func get_total_selected_cost(cost_reduction: int = 0) -> int:
 	var total = 0
 	for card in selected_cards:
-		total += card.card_data.get_effective_cost()
+		var cost = card.card_data.get_effective_cost()
+		# Apply cost reduction to ALL cards
+		if cost_reduction > 0:
+			cost = max(0, cost - cost_reduction)
+		total += cost
 	return total
 
 func clear_selection() -> void:

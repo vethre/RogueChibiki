@@ -59,8 +59,15 @@ const LANGUAGES = [
 ]
 
 # Data section
+@onready var export_save_btn: Button = $"SafeArea/MainVBox/ScrollContainer/Content/DataSection/DataMargin/DataContent/ExportSaveBtn"
+@onready var import_save_btn: Button = $"SafeArea/MainVBox/ScrollContainer/Content/DataSection/DataMargin/DataContent/ImportSaveBtn"
 @onready var reset_stats_btn: Button = $"SafeArea/MainVBox/ScrollContainer/Content/DataSection/DataMargin/DataContent/ResetStatsBtn"
 @onready var back_btn: Button = $"SafeArea/MainVBox/BackButton"
+
+# Result popup
+@onready var result_panel: Panel = $ResultPanel
+@onready var result_label: Label = $"ResultPanel/VBox/ResultLabel"
+@onready var result_ok_btn: Button = $"ResultPanel/VBox/OkButton"
 
 # Confirm dialog
 @onready var confirm_panel: Panel = $ConfirmPanel
@@ -81,6 +88,8 @@ func _ready() -> void:
 	_load_settings()
 	_connect_signals()
 	confirm_panel.hide()
+	if result_panel:
+		result_panel.hide()
 	_update_ui_text()
 
 	# Refresh UI when language changes
@@ -142,6 +151,8 @@ func _update_ui_text() -> void:
 	card_borders_check.text = Localization.t("SETTINGS_CARD_BORDERS")
 
 	# Data section
+	export_save_btn.text = Localization.t("SETTINGS_EXPORT_SAVE")
+	import_save_btn.text = Localization.t("SETTINGS_IMPORT_SAVE")
 	reset_stats_btn.text = Localization.t("SETTINGS_RESET_STATS")
 	back_btn.text = Localization.t("SETTINGS_BACK")
 
@@ -212,10 +223,14 @@ func _connect_signals() -> void:
 	language_option.item_selected.connect(_on_language_selected)
 
 	# Data
+	export_save_btn.pressed.connect(_on_export_save_pressed)
+	import_save_btn.pressed.connect(_on_import_save_pressed)
 	reset_stats_btn.pressed.connect(_on_reset_stats_pressed)
 	back_btn.pressed.connect(_on_back_pressed)
 	confirm_yes_btn.pressed.connect(_on_confirm_yes)
 	confirm_no_btn.pressed.connect(_on_confirm_no)
+	if result_ok_btn:
+		result_ok_btn.pressed.connect(_on_result_ok)
 
 # Gameplay handlers
 func _on_auto_end_turn_toggled(pressed: bool) -> void:
@@ -339,4 +354,34 @@ func _on_confirm_no() -> void:
 
 func _on_back_pressed() -> void:
 	AudioManager.play_card_pickup()
-	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+	VFXManager.transition_to_scene("res://scenes/ui/main_menu.tscn")
+
+# Export/Import handlers
+func _on_export_save_pressed() -> void:
+	AudioManager.play_card_pickup()
+	var result = GameManager.export_save_to_downloads()
+	if result.success:
+		_show_result(Localization.t("SETTINGS_EXPORT_SUCCESS"))
+	else:
+		_show_result(Localization.t("SETTINGS_EXPORT_FAILED"))
+
+func _on_import_save_pressed() -> void:
+	AudioManager.play_card_pickup()
+	var result = GameManager.import_save_from_downloads()
+	if result.success:
+		var msg = Localization.t("SETTINGS_IMPORT_SUCCESS") % [result.xp, result.bouquets, result.skins]
+		_show_result(msg)
+	else:
+		_show_result(Localization.t("SETTINGS_IMPORT_FAILED"))
+
+func _show_result(message: String) -> void:
+	if result_panel and result_label:
+		result_label.text = message
+		result_panel.show()
+	else:
+		# Fallback: just print to console if panel doesn't exist
+		print(message)
+
+func _on_result_ok() -> void:
+	if result_panel:
+		result_panel.hide()

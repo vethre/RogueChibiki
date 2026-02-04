@@ -1,14 +1,10 @@
-[gd_resource type="Resource" script_class="CardData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="CardData" load_steps=2 format=3 uid="uid://dofiiu0e78lfm"]
 
-[ext_resource type="Script" path="res://scripts/cards/card_data.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://ysbw5184i56c" path="res://scripts/cards/card_data.gd" id="1_script"]
 
 [resource]
 script = ExtResource("1_script")
 card_name = "Quick Draw"
-energy_cost = 1
 card_type = 2
 description = "Draw 2 cards."
-damage = 0
-block = 0
 draw_cards = 2
-special_effect = ""

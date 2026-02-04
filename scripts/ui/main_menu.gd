@@ -39,6 +39,9 @@ func _ready() -> void:
 	_update_stats()
 	_update_bouquets()
 
+	# Play main menu music (combat/chill jazz)
+	AudioManager.play_combat_music()
+
 func _on_locale_changed(_new_locale: String) -> void:
 	_update_ui_text()
 	_update_stats()
@@ -162,23 +165,25 @@ func _update_stats() -> void:
 
 func _on_play_pressed() -> void:
 	AudioManager.play_card_pickup()
-	get_tree().change_scene_to_file("res://scenes/ui/character_select.tscn")
+	VFXManager.transition_to_scene("res://scenes/ui/character_select.tscn")
 
 func _on_settings_pressed() -> void:
 	AudioManager.play_card_pickup()
-	get_tree().change_scene_to_file("res://scenes/ui/settings_scene.tscn")
+	VFXManager.transition_to_scene("res://scenes/ui/settings_scene.tscn")
 
 func _on_credits_pressed() -> void:
 	AudioManager.play_card_pickup()
-	get_tree().change_scene_to_file("res://scenes/ui/credits_scene.tscn")
+	VFXManager.transition_to_scene("res://scenes/ui/credits_scene.tscn")
 
 func _on_skins_pressed() -> void:
 	AudioManager.play_card_pickup()
-	get_tree().change_scene_to_file("res://scenes/ui/skins_scene.tscn")
+	VFXManager.transition_to_scene("res://scenes/ui/skins_scene.tscn")
 
 func _on_web_pressed() -> void:
 	AudioManager.play_card_pickup()
 	OS.shell_open("https://roguechibiki.space")
 
 func _on_quit_pressed() -> void:
+	VFXManager.fade_out(0.3)
+	await get_tree().create_timer(0.3).timeout
 	get_tree().quit()

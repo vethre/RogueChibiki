@@ -1,14 +1,10 @@
-[gd_resource type="Resource" script_class="CardData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="CardData" load_steps=2 format=3 uid="uid://7066crymy0tf"]
 
-[ext_resource type="Script" path="res://scripts/cards/card_data.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://ysbw5184i56c" path="res://scripts/cards/card_data.gd" id="1_script"]
 
 [resource]
 script = ExtResource("1_script")
 card_name = "Defend"
-energy_cost = 1
 card_type = 1
 description = "Gain 6 Block."
-damage = 0
 block = 6
-draw_cards = 0
-special_effect = ""

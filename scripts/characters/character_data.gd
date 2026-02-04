@@ -10,7 +10,10 @@ enum PassiveType {
 	CRIT_CHANCE,           # Buster: X% chance to deal double damage
 	LIFESTEAL,             # Mokrivskyi: Heal for X% of damage dealt
 	BONUS_ENERGY,          # Chriswave: Start each turn with +X energy
-	DRAW_ON_KILL           # Gaechka: Draw +X cards when enemy dies
+	CARD_DISCOUNT,         # Gaechka: All cards cost X less energy (min 0)
+	THORNS,                # Morphi: Return X damage when hit
+	BALANCE_MASTER,        # KoryaMC: +X damage after defend, +X block after attack
+	RAGE_FUELED            # ByOwl: +X damage per Rage card in discard pile
 }
 
 @export var character_name: String = "Chibiki"

@@ -16,6 +16,9 @@ const CHAR_BUSTER = preload("res://data/characters/char_buster.tres")
 const CHAR_MOKRIVSKYI = preload("res://data/characters/char_mokrivskyi.tres")
 const CHAR_CHRISWAVE = preload("res://data/characters/char_chriswave.tres")
 const CHAR_GAECHKA = preload("res://data/characters/char_gaechka.tres")
+const CHAR_BYOWL = preload("res://data/characters/char_byowl.tres")
+const CHAR_MORPHI = preload("res://data/characters/char_morphi.tres")
+const CHAR_KORYAMC = preload("res://data/characters/char_koryamc.tres")
 
 # Card resources
 const CARD_STRIKE = preload("res://data/card_strike.tres")
@@ -97,7 +100,8 @@ const AVAILABLE_SKINS = {
 func _ready() -> void:
 	all_characters = [
 		CHAR_TANK, CHAR_AGGRO, CHAR_CONTROL, CHAR_COMBO,
-		CHAR_EVELONE, CHAR_BUSTER, CHAR_MOKRIVSKYI, CHAR_CHRISWAVE, CHAR_GAECHKA
+		CHAR_EVELONE, CHAR_BUSTER, CHAR_MOKRIVSKYI, CHAR_CHRISWAVE, CHAR_GAECHKA,
+		CHAR_BYOWL, CHAR_MORPHI, CHAR_KORYAMC
 	]
 	_load_save_data()
 
@@ -147,10 +151,22 @@ func get_starting_deck(character: CharacterData) -> Array[CardData]:
 			# Chriswave gets 2 Quick Draw (use extra energy)
 			deck.append(CARD_QUICK_DRAW.duplicate())
 			deck.append(CARD_QUICK_DRAW.duplicate())
-		CharacterData.PassiveType.DRAW_ON_KILL:
-			# Gaechka gets 1 Quick Draw + 1 Rage (kill faster for draws)
+		CharacterData.PassiveType.CARD_DISCOUNT:
+			# Gaechka gets 2 Quick Draw (play more cards with discount)
 			deck.append(CARD_QUICK_DRAW.duplicate())
-			deck.append(CARD_RAGE.duplicate())
+			deck.append(CARD_QUICK_DRAW.duplicate())
+		CharacterData.PassiveType.THORNS:
+			# Morphi gets Spike Armor (defense synergy)
+			for card in character.special_cards:
+				deck.append(card.duplicate())
+		CharacterData.PassiveType.BALANCE_MASTER:
+			# KoryaMC gets Balance Strike (hybrid card)
+			for card in character.special_cards:
+				deck.append(card.duplicate())
+		CharacterData.PassiveType.RAGE_FUELED:
+			# ByOwl gets Fury + 2 Rage (rage synergy)
+			for card in character.special_cards:
+				deck.append(card.duplicate())
 
 	return deck
 
@@ -242,3 +258,66 @@ func _save_data() -> void:
 	config.set_value("skins", "unlocked", unlocked_skins)
 	config.set_value("skins", "selected", selected_skins)
 	config.save(save_path)
+
+func save_data() -> void:
+	_save_data()
+
+## Export save data to Downloads folder (survives app uninstall)
+func export_save_to_downloads() -> Dictionary:
+	var downloads_path = OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS)
+	var export_path = downloads_path + "/rogue_chibiki_save.cfg"
+
+	var config = ConfigFile.new()
+	config.set_value("progress", "xp", player_xp)
+	config.set_value("progress", "bouquets", total_bouquets)
+	config.set_value("skins", "unlocked", unlocked_skins)
+	config.set_value("skins", "selected", selected_skins)
+	config.set_value("meta", "export_date", Time.get_datetime_string_from_system())
+	config.set_value("meta", "version", "0.9.9.3")
+
+	var error = config.save(export_path)
+	if error == OK:
+		return {"success": true, "path": export_path}
+	else:
+		return {"success": false, "error": error}
+
+## Import save data from Downloads folder
+func import_save_from_downloads() -> Dictionary:
+	var downloads_path = OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS)
+	var import_path = downloads_path + "/rogue_chibiki_save.cfg"
+
+	var config = ConfigFile.new()
+	var error = config.load(import_path)
+
+	if error != OK:
+		return {"success": false, "error": "File not found or corrupted"}
+
+	# Load the data
+	var imported_xp = config.get_value("progress", "xp", 0)
+	var imported_bouquets = config.get_value("progress", "bouquets", 0)
+	var imported_skins = config.get_value("skins", "unlocked", [])
+	var imported_selected = config.get_value("skins", "selected", {})
+
+	# Merge with current data (take the higher values)
+	player_xp = max(player_xp, imported_xp)
+	total_bouquets = max(total_bouquets, imported_bouquets)
+
+	# Merge skins (union of both)
+	for skin in imported_skins:
+		if skin not in unlocked_skins:
+			unlocked_skins.append(skin)
+
+	# Merge selected skins
+	for char_name in imported_selected:
+		if char_name not in selected_skins:
+			selected_skins[char_name] = imported_selected[char_name]
+
+	_check_unlocks()
+	_save_data()
+
+	return {
+		"success": true,
+		"xp": player_xp,
+		"bouquets": total_bouquets,
+		"skins": unlocked_skins.size()
+	}
